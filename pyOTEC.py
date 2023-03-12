@@ -18,6 +18,9 @@ def pyOTEC():
     start = time.time()
     parent_dir = os.getcwd()
     
+    ## OTEC's costs are still uncertain today and estimations in literature can vary significantly.
+    ## Therefore, we offer two cost models from which the user can choose: "low_cost" and "high_cost"
+    
     cost_level = 'low_cost'
     
     studied_region = input('++ Setting up HYCOM download ++\n\nEnter the region to be analysed.  ')
