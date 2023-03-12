@@ -23,6 +23,9 @@ def pyOTEC():
     
     cost_level = 'low_cost'
     
+    ## Please enter the region that you want to analyse. Please check the file "HYCOM_download_ranges_per_region.csv"
+    ## for the regions that are covered by pyOTEC.
+    
     studied_region = input('++ Setting up HYCOM download ++\n\nEnter the region to be analysed.  ')
     
     new_path = os.path.join(parent_dir,f'{studied_region}\\')
