@@ -95,6 +95,8 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
         depth = int(T_water_nc.variables['depth'][:])
         T_water = T_water_nc.variables['water_temp'][:]
         
+        os.remove(file)
+        
         hycom_points = np.round([(idx_lon,idx_lat,lon,lat) for idx_lon,lon in enumerate(longitude) for idx_lat,lat in enumerate(latitude)],2)
         
         for index,point in enumerate(hycom_points):
@@ -168,14 +170,14 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     
     filename = f'T_{depth}m_2011_{studied_region}.h5'.replace(" ","_")
     
-    T_water_profiles_df.to_hdf(new_path + filename,key='T_water_profiles',mode='w')
-    pd.DataFrame(T_water_design).to_hdf(new_path + filename,key='T_water_design')
-    pd.DataFrame(dist_shore).to_hdf(new_path + filename,key='dist_shore')
-    pd.DataFrame(eff_trans).to_hdf(new_path + filename,key='eff_trans')
-    pd.DataFrame(coordinates).to_hdf(new_path + filename,key='coordinates')
-    pd.DataFrame(nan_columns[1]).to_hdf(new_path + filename,key='nan_columns')
+    # T_water_profiles_df.to_hdf(new_path + filename,key='T_water_profiles',mode='w')
+    # pd.DataFrame(T_water_design).to_hdf(new_path + filename,key='T_water_design')
+    # pd.DataFrame(dist_shore).to_hdf(new_path + filename,key='dist_shore')
+    # pd.DataFrame(eff_trans).to_hdf(new_path + filename,key='eff_trans')
+    # pd.DataFrame(coordinates).to_hdf(new_path + filename,key='coordinates')
+    # pd.DataFrame(nan_columns[1]).to_hdf(new_path + filename,key='nan_columns')
                
-    print(f'Processing {filename} successful. h5 temperature profiles exported.\n')
+    # print(f'Processing {filename} successful. h5 temperature profiles exported.\n')
             
     return T_water_profiles, T_water_design, coordinates, T_water_profiles_df.index, inputs, nan_columns
         

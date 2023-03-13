@@ -8,7 +8,7 @@ Created on Wed Feb 22 15:28:39 2023
 import pandas as pd
 import numpy as np
 
-def parameters_and_constants(cost_level='low_cost'):
+def parameters_and_constants(p_gross=-136000,cost_level='low_cost'):
     
     ## Setup for HYCOM seawater resource data download
     glb = 'GLBu0.08'  
@@ -16,7 +16,7 @@ def parameters_and_constants(cost_level='low_cost'):
     
     time_origin = '2000-01-01 00:00:00' 
                 
-    date_start = '2011-12-31 21:00:00'      
+    date_start = '2011-01-01 00:00:00'      
     date_end = '2011-12-31 21:00:00'
     time_stride = 1
     
@@ -43,10 +43,6 @@ def parameters_and_constants(cost_level='low_cost'):
         raise ValueError('Invalid cost level. Valid inputs are "low_cost" and "high_cost"')
     
     pipe_material = [rho_pipe,roughness_pipe]
-           
-    ## Power and location-specific inputs
-    
-    p_gross = -136000   # gross power output as negative value, i.e. leaving the system, in kW\
         
     min_depth = -1000   # minimum depth in m
     max_depth = -3000   # maximum depth in m (restricted by technical mooring limitations)

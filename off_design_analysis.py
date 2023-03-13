@@ -140,22 +140,22 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
                         otec_plant_lowest_lcoe[key][:,index] = results_matrix[configuration_lowest_LCOE[index]][key][:,index]
         
     otec_plant_lowest_lcoe['Configuration'] = configuration_lowest_LCOE
+    
+    # net_power_df = pd.DataFrame(np.round(otec_plant_lowest_lcoe['p_net']/otec_plant_lowest_lcoe['p_gross_nom'],3))
+    # net_power_df.columns = [str(val[0]) + '_' + str(val[1]) for idx,val in enumerate(coordinates)]
+    # net_power_df['Time'] = timestamp
+    # net_power_df = net_power_df.set_index('Time')
+    
+    # date_start = inputs['date_start']
+    # p_gross = inputs['p_gross']
+    
+    # net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5'.replace(" ","_"),key='net_power',mode='w')
        
-    net_power_df = pd.DataFrame(np.round(otec_plant_lowest_lcoe['p_net']/otec_plant_lowest_lcoe['p_gross_nom'],3))
-    net_power_df.columns = [str(val[0]) + '_' + str(val[1]) for idx,val in enumerate(coordinates)]
-    net_power_df['Time'] = timestamp
-    net_power_df = net_power_df.set_index('Time')
+    # for key,value in otec_plant_lowest_lcoe.items():
+    #     if value.ndim == 1:
+    #         value = value.reshape(1,-1)             
+    #     pd.DataFrame(np.round(value,2), columns=net_power_df.columns).to_hdf(new_path + f'Time_series_data_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5',key=f'{key}',mode='a')
     
-    date_start = inputs['date_start']
-    p_gross = inputs['p_gross']
-    
-    net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5'.replace(" ","_"),key='net_power',mode='w')
-       
-    for key,value in otec_plant_lowest_lcoe.items():
-        if value.ndim == 1:
-            value = value.reshape(1,-1)             
-        pd.DataFrame(np.round(value,2), columns=net_power_df.columns).to_hdf(new_path + f'Time_series_data_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5',key=f'{key}',mode='a')
-    
-    print('\nTime series data successfully exported as h5 file.\n\nEnd of script.')
+    # print('\nTime series data successfully exported as h5 file.\n\nEnd of script.')
     
     return otec_plant_lowest_lcoe
