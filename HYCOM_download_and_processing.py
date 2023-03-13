@@ -37,11 +37,11 @@ def get_HYCOM_data(cost_level,inputs,studied_region,new_path):
                 east = float(regions[regions['region']==studied_region]['east'].iloc[part])
                              
                 start_hycom = time.time()
-                filename = os.path.join(new_path, f'T_{depth}m_{year}_{studied_region}_{part+1}.nc')
+                filename = os.path.join(new_path, f'T_{depth}m_{year}_{studied_region}_{part+1}.nc'.replace(" ","_"))
                 files.append(filename)
                 
                 if os.path.isfile(filename):           
-                    print(f'T_{depth}m_2011_{studied_region}_{part+1}.nc already exists. No download necessary.')
+                    print('File already exists. No download necessary.')
                     continue
                 else:               
                     url = ('http://ncss.hycom.org/thredds/ncss/GLBu0.08/reanalysis/3hrly?var=water_temp&north=' +
@@ -166,7 +166,7 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     eff_trans = np.delete(eff_trans,nan_columns[1],axis=1)
     inputs['eff_trans'] = eff_trans
     
-    filename = f'T_{depth}m_2011_{studied_region}.h5'
+    filename = f'T_{depth}m_2011_{studied_region}.h5'.replace(" ","_")
     
     T_water_profiles_df.to_hdf(new_path + filename,key='T_water_profiles',mode='w')
     pd.DataFrame(T_water_design).to_hdf(new_path + filename,key='T_water_design')

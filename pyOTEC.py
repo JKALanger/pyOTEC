@@ -28,7 +28,7 @@ def pyOTEC():
     
     studied_region = input('++ Setting up HYCOM download ++\n\nEnter the region to be analysed.  ')
     
-    new_path = os.path.join(parent_dir,f'{studied_region}\\')
+    new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
     
     if os.path.isdir(new_path):
         pass
@@ -47,18 +47,18 @@ def pyOTEC():
     sites_df = sites_df[(sites_df['region']==studied_region) & (sites_df['water_depth'] <= inputs['min_depth']) & (sites_df['water_depth'] >= inputs['max_depth'])]   
     sites_df = sites_df.sort_values(by=['longitude','latitude'],ascending=True)
     
-    h5_file_WW = os.path.join(new_path, f'T_{depth_WW}m_2011_{studied_region}.h5')
-    h5_file_CW = os.path.join(new_path, f'T_{depth_CW}m_2011_{studied_region}.h5')
+    h5_file_WW = os.path.join(new_path, f'T_{depth_WW}m_2011_{studied_region}.h5'.replace(" ","_"))
+    h5_file_CW = os.path.join(new_path, f'T_{depth_CW}m_2011_{studied_region}.h5'.replace(" ","_"))
     
     if os.path.isfile(h5_file_CW):
         T_CW_profiles, T_CW_design, coordinates_CW, timestamp, inputs, nan_columns_CW = load_temperatures(h5_file_CW, inputs)
-        print(f'T_{depth_CW}m_2011_{studied_region}.h5 already exist. No processing necessary.')
+        print(f'{h5_file_CW} already exist. No processing necessary.')
     else:
         T_CW_profiles, T_CW_design, coordinates_CW, timestamp, inputs, nan_columns_CW = data_processing(files[int(len(files)/2):int(len(files))],sites_df,inputs,studied_region,new_path,'CW')
     
     if os.path.isfile(h5_file_WW):
         T_WW_profiles, T_WW_design, coordinates_WW, timestamp, inputs, nan_columns_WW = load_temperatures(h5_file_WW, inputs)
-        print(f'T_{depth_WW}m_2011_{studied_region}.h5 already exist. No processing necessary.')
+        print(f'{h5_file_WW} already exist. No processing necessary.')
     else:
         T_WW_profiles, T_WW_design, coordinates_WW, timestamp, inputs, nan_columns_WW = data_processing(files[0:int(len(files)/2)],sites_df,inputs,studied_region,new_path,'WW',nan_columns_CW)
          
@@ -75,7 +75,7 @@ def pyOTEC():
     date_start = inputs['date_start']
     p_gross = inputs['p_gross']
     
-    sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.csv',index=True,float_format='%.3f')
+    sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True,float_format='%.3f')
     
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')

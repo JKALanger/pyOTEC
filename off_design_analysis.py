@@ -149,7 +149,7 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
     date_start = inputs['date_start']
     p_gross = inputs['p_gross']
     
-    net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5',key='net_power',mode='w')
+    net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5'.replace(" ","_"),key='net_power',mode='w')
        
     for key,value in otec_plant_lowest_lcoe.items():
         if value.ndim == 1:
