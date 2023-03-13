@@ -11,14 +11,20 @@ import numpy as np
 def parameters_and_constants(p_gross=-136000,cost_level='low_cost'):
     
     ## Setup for HYCOM seawater resource data download
+    
     glb = 'GLBu0.08'  
+    # HYCOM's dataset comes in a spatial resolution of 0.08 x 0.08 deg. To limit computational efforts and account for thermal degradation
+    # we only calculate every third datapoint, which yields a resolution of 0.24 x 0.24 deg.
     horizontal_stride = 3   
     
     time_origin = '2000-01-01 00:00:00' 
-                
+    
+    # The start and end date of the analysis. time_stride defines the temporal resolution as a multiple of 3 hours (time_stride = 1 --> 3 hours, time_stride = 2 --> 6 hours, etc.)            
     date_start = '2011-01-01 00:00:00'      
     date_end = '2011-12-31 21:00:00'
     time_stride = 1
+    
+    # HYCOM data comes in specific depth layers, which are listed here.
     
     hycom_depths = [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,60,70,80,90,100,125,150,200,250,300,350,400,500,600,700,800,900,1000,1250,1500,2000,2500,3000,4000,5000]
         
