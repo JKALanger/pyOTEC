@@ -163,8 +163,11 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     
     ## Although HYCOM's dataset comes in 3-hourly resolution, many timestamps are completely missing. Here, we resample the dataset to show all timestamps
     ## and to fill previously missing steps with NaN, which are then filled via linear interpolation
-    T_water_profiles_df = pd.DataFrame(T_water_profiles)   
-    T_water_profiles_df.columns = [str(val[0]) + '_' + str(val[1]) for idx,val in enumerate(coordinates)]
+    T_water_profiles_df = pd.DataFrame(T_water_profiles)
+    if T_water_profiles_df.shape[1] == 1:
+        T_water_profiles_df.columns = [str(coordinates[0]) + '_' + str(coordinates[1])]
+    else:
+        T_water_profiles_df.columns = [str(val[0]) + '_' + str(val[1]) for idx,val in enumerate(coordinates)]
     T_water_profiles_df['time'] = timestamp
     T_water_profiles_df = T_water_profiles_df.set_index('time').asfreq('3H')       
     T_water_profiles_df = T_water_profiles_df.interpolate(method='linear')
