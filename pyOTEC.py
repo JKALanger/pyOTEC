@@ -6,11 +6,12 @@ Created on Tue Apr 27 11:16:02 2021
 """
 
 ## Hello there, thank you for using pyOTEC. 
-## With pyOTEC, you can create spatially and temporally resolved power generation profiles for any technically feasible system size and region.
+## With pyOTEC, you can create spatially and temporally resolved power generation profiles from ocean thermal energy conversion (OTEC)
+## for any technically feasible system size and region.
 
-## This is the main file used to generate 3-hourly power production profiles for ocean thermal energy conversion (OTEC). We try to document the code as
-## clear and transparent as possible. Please refer to the paper "TITLE PAPER" by Langer (2023) for further details and visualisations. If you find pyOTEC
-## useful, please cite the abovementioned paper in your work. If you have any questions, please reach out to j.k.a.langer@tudelft.nl
+## This is the main file and heart of pyOTEC. We try to document the code as clear and transparent as possible. Please refer to the paper 
+## "TITLE PAPER" by Langer (2023) for further details and visualisations. If you use pyOTEC for your own research, please remember to cite the abovementioned
+## paper. If you have any questions, please reach out to j.k.a.langer@tudelft.nl
 
 import os
 import time
@@ -38,10 +39,6 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     ## Here, we load all technical and economic inputs used for the analysis
     inputs = parameters_and_constants(p_gross,cost_level)
     
-    ## We need the variables "depth_WW" and "depth_CW" for the download of the HYCOM seawater temperature data.
-    ## WW stands for Warm Water, CW stands for Cold Water
-    depth_WW = inputs['length_WW_inlet']
-    depth_CW = inputs['length_CW_inlet']
     ## If the seawater temperature data does not exist in the results folder, it is downloaded here. 
     files = get_HYCOM_data(cost_level,inputs,studied_region,new_path)
     
@@ -56,7 +53,9 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     sites_hycom = sites_hycom.sort_values(by=['longitude','latitude'],ascending=True)
     
     ## After downloading the raw HYCOM data, we process the data further. We define the filenames and check whether the files already exist in the results folder
-    ## If the files already exist, we merely have to load them. If they don't exist yet, they are generated now.
+    ## If the files already exist, we merely have to load them. If they don't exist yet, they are generated now. WW stands for Warm Water, CW stands for Cold Water
+    depth_WW = inputs['length_WW_inlet']
+    depth_CW = inputs['length_CW_inlet']
     
     h5_file_WW = os.path.join(new_path, f'T_{depth_WW}m_2011_{studied_region}.h5'.replace(" ","_"))
     h5_file_CW = os.path.join(new_path, f'T_{depth_CW}m_2011_{studied_region}.h5'.replace(" ","_"))
@@ -119,6 +118,3 @@ if __name__ == "__main__":
     cost_level = 'low_cost'
     
     otec_plants, sites = pyOTEC(studied_region,p_gross,cost_level)
-    
-    print('h5 files not generated for global analysis')
-    print('nc files deleted after data extraction')
