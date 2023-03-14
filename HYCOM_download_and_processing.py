@@ -175,8 +175,8 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     # Calculating interquartiles. With a factor 3, we are less strict with outliers than the convention of 1.5
     # With this, we want to account for extreme seawater temperature conditions that would otherwise be removed from the dataset
     r = T_water_profiles_df.rolling(window=56)
-    mps = (r.quantile(0.75) - r.quantile(0.25))*3 
-    np.where(T_water_profiles>15)
+    mps = (r.quantile(0.75) - r.quantile(0.25))*3
+    
     T_water_profiles_df[(T_water_profiles_df < T_water_profiles_df.quantile(0.25) - mps) |
                         (T_water_profiles_df > T_water_profiles_df.quantile(0.75) + mps)] = np.nan
     
