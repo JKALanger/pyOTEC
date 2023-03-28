@@ -72,15 +72,7 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     OPEX = CAPEX_total*opex       
         
     LCOE_nom = (CAPEX_total*inputs['crf']+OPEX)*100/(-p_net*inputs['availability_factor']*8760) # LCOE in ct/kWh
-    
-    # np.where(LCOE_nom < 0)
-    # CAPEX_total[0,1061]
-    # OPEX[0,1061]
-    # p_net[0,1061]
-    # LCOE_nom[0,1061]
-    
-    # a = T_WW_profiles[:,1061]
-    
+       
     if np.any(LCOE_nom <= 0):
         raise ValueError('Invalid LCOE found, please check inputs.')
     else:
@@ -90,7 +82,7 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
 
 def lcoe_time_series(otec_plant_nom,inputs,p_net_ts):
     
-    p_net_mean = np.mean(p_net_ts)
+    p_net_mean = np.mean(p_net_ts,axis=0)
     e_mean_annual = -p_net_mean*8760
     
     lcoe_ts = (otec_plant_nom['CAPEX']*inputs['crf']+otec_plant_nom['OPEX'])*100/(e_mean_annual*inputs['availability_factor'])

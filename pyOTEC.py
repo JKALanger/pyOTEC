@@ -85,14 +85,15 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     sites['longitude'] = coordinates_CW[:,0]
     sites['latitude'] = coordinates_CW[:,1]
     sites['p_net_nom'] = -otec_plants['p_net_nom'].T/1000
-    sites['AEP'] = -np.sum(otec_plants['p_net'].T)*3/1000000
+    sites['AEP'] = -np.mean(otec_plants['p_net'],axis=0)*8760/1000000
     sites['CAPEX'] = otec_plants['CAPEX'].T/1000000
     sites['LCOE'] = otec_plants['LCOE'].T
+    sites['Configuration'] = otec_plants['Configuration'].T
     
     date_start = inputs['date_start']
     p_gross = inputs['p_gross']
     
-    sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True,float_format='%.3f')
+    sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True,index_label='ID',float_format='%.3f')
     
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
