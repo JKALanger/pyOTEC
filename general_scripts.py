@@ -19,8 +19,13 @@ def pressure_drop(T_water_ts,u_water_ts,d_pipes,rho_water,roughness_pipe,length,
 
 def saturation_pressures_and_temperatures(T_WW_in,T_CW_in,del_T_WW,del_T_CW,inputs):
 
-    T_evap = T_WW_in - del_T_WW - inputs['T_pinch_WW']
-    T_cond = T_CW_in + del_T_CW + inputs['T_pinch_CW']
+    T_evap = np.round(T_WW_in - del_T_WW - inputs['T_pinch_WW'],1)
+    T_cond = np.round(T_CW_in + del_T_CW + inputs['T_pinch_CW'],1)
+    
+    infeasible_T = np.where(T_evap <= T_cond,1,0)
+    
+    T_cond[infeasible_T==1] = np.nan
+    T_evap[infeasible_T==1] = np.nan
     
     p_evap = 0.00002196*T_evap**3+0.00193103*T_evap**2+0.1695763*T_evap+4.25739601
     p_cond = 0.00002196*T_cond**3+0.00193103*T_cond**2+0.1695763*T_cond+4.25739601

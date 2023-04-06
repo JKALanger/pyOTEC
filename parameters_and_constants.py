@@ -8,26 +8,34 @@ Created on Wed Feb 22 15:28:39 2023
 import pandas as pd
 import numpy as np
 
-def parameters_and_constants(p_gross=-136000,cost_level='low_cost'):
+def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS'):
     
-    ## Setup for HYCOM seawater resource data download
     
-    glb = 'GLBu0.08'  
-    # HYCOM's dataset comes in a spatial resolution of 0.08 x 0.08 deg. To limit computational efforts and account for thermal degradation
-    # we only calculate every third datapoint, which yields a resolution of 0.24 x 0.24 deg.
-    horizontal_stride = 3   
-    
-    time_origin = '2000-01-01 00:00:00' 
-    
-    # The start and end date of the analysis. time_stride defines the temporal resolution as a multiple of 3 hours (time_stride = 1 --> 3 hours, time_stride = 2 --> 6 hours, etc.)            
-    date_start = '2011-01-01 00:00:00'      
-    date_end = '2011-12-31 21:00:00'
-    time_stride = 1
-    
-    # HYCOM data comes in specific depth layers, which are listed here.
-    
-    hycom_depths = [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,60,70,80,90,100,125,150,200,250,300,350,400,500,600,700,800,900,1000,1250,1500,2000,2500,3000,4000,5000]
+    if data == 'HYCOM':
+        ## Setup for HYCOM seawater resource data download
+        glb = 'GLBu0.08'  
+        horizontal_stride = 3      
+        time_origin = '2000-01-01 00:00:00' 
         
+        year = 2011           
+        date_start = '2011-01-01 00:00:00'      
+        date_end = '2011-12-31 21:00:00'
+        time_stride = 1
+            
+        # depths = [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,60,70,80,90,100,125,150,200,250,300,350,400,500,600,700,800,900,1000,1250,1500,2000,2500,3000,4000,5000]
+    else:
+        ## Setup for CMEMS data download using motu
+    
+        time_origin = '1950-01-01 00:00:00'
+        
+        year = 2020          
+        date_start = '2020-01-01 00:00:00'      
+        date_end = '2020-12-31 21:00:00'
+        
+        # depths = [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,60,70,80,90,100,125,150,200,250,300,350,400,500,600,700,800,900,1000,1250,1500,2000,2500,3000,4000,5000]
+
+    t_resolution = '24H'    
+
     ## Physical properties
     
     rho_NH3 = 625       # density of ammonia in kg/m3
@@ -90,10 +98,10 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost'):
     
     ## Seawater pipes
     
-    length_WW_inlet = 20    # warm seawater inlet pipe length in m
+    length_WW_inlet = 21.598819732666016    # warm seawater inlet pipe length in m, according to Copernicus dataset depth
     length_WW_outlet = 60   # warm seawater outlet pipe length in m
     length_WW = length_WW_inlet + length_WW_outlet      # total length of warm seawater pipe pair 
-    length_CW_inlet = 1000  # cold seawater inlet pipe length in m
+    length_CW_inlet = 902.3392944335938  # cold seawater inlet pipe length in m, according to Copernicus dataset depth
     length_CW_outlet = 60  # cold seawater outlet pipe length in m
     length_CW = length_CW_inlet + length_CW_outlet      # total length of cold seawater pipe pair 
     thickness = 0.09        # pipe thickness in m 

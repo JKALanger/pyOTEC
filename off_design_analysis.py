@@ -7,22 +7,12 @@ Created on Thu Feb 23 08:49:22 2023
 
 import numpy as np
 import pandas as pd
+import os
 
 from otec_sizing import otec_sizing
 from capex_opex_lcoe import capex_opex_lcoe
+# from parameters_and_constants import parameters_and_constants
 from otec_operation import otec_operation
-
-## pyOTEC finds the economically most attractive system design in two steps, namely the on-design (nominal) and off-design (operational) analysis
-
-## During the on-design analysis, pyOTEC sizes the system with single values for warm and cold seawater temperature. During this part, pyOTEC determines
-## the outlet temperatures that yield the lowest levelised cost of electricity (LCOE). The design with the lowest LCOE is then used for the off-design analysis.
-
-## During the off-design analysis, we use the previously downloaded and processed 3-hourly temperature data to assess the plants' technical and economic performance.
-
-## We repeat these two steps a total of nine times for all combinations of minimum, median, and maximum warm and cold seawater temperature. At the end,
-## we detect the combination with the lowest off-design LCOE and return that combination as the preferable design.
-
-## See the underlying papers for further information.
 
 def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
     
@@ -64,13 +54,18 @@ def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
             
             if T_WW_in.ndim == 0:          
                 lcoe_matrix_nominal[int((i-del_T_CW_min)/interval_CW)][int((j-del_T_WW_min)/interval_WW)] = LCOE_nom
+                lcoe_matrix_nominal = np.nan_to_num(lcoe_matrix_nominal,nan=10000) # replace NaN with unreasonably high value
                 del_T_pair = divmod(lcoe_matrix_nominal.argmin(),lcoe_matrix_nominal.shape[1])
                 del_T_CW = (del_T_pair[0] * interval_CW + 20)/10
                 del_T_WW = (del_T_pair[1] * interval_CW + 20)/10
             else:
                 lcoe_matrix_nominal[int((i-del_T_CW_min)/interval_CW)][int((j-del_T_WW_min)/interval_WW)][:] = LCOE_nom
+                lcoe_matrix_nominal = np.nan_to_num(lcoe_matrix_nominal,nan=10000) # replace NaN with unreasonably high value
                 del_T_CW = ( np.argmin(np.min(lcoe_matrix_nominal,axis=1),axis=0) * interval_CW + 20)/10
                 del_T_WW = ( np.argmin(np.min(lcoe_matrix_nominal,axis=0),axis=0) * interval_WW + 20)/10
+       
+    
+    # It would be more elegant to not re-calculate the plants, but I don't know how to make it better.
     
     otec_plant_nominal_lowest_lcoe = otec_sizing(T_WW_in,
                                         T_CW_in,
@@ -109,7 +104,10 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
             otec_plant_off_design = otec_operation(otec_plant_nominal_lowest_lcoe,T_WW_profiles,T_CW_profiles,inputs)
             
             otec_plant_off_design.update(otec_plant_nominal_lowest_lcoe)
-
+            
+            # otec_plant_off_design['Configuration'] = index_ww + index_cw*3 + 1
+            
+            
             results_matrix[index_ww + index_cw*3 + 1] = otec_plant_off_design
             
             if T_WW_design.ndim == 1:
@@ -117,6 +115,8 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
             else:    
                 lcoe_matrix[index_cw][index_ww][:]  = otec_plant_off_design['LCOE']
     
+    lcoe_matrix = np.nan_to_num(lcoe_matrix,nan=10000) # replace NaN with unreasonably high value
+              
     index_CW_lowest_LCOE = np.argmin(np.min(lcoe_matrix,axis=1),axis=0)
     index_WW_lowest_LCOE = np.argmin(np.min(lcoe_matrix,axis=0),axis=0)
     
@@ -145,16 +145,14 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
     
     net_power_df = pd.DataFrame(np.round(otec_plant_lowest_lcoe['p_net']/otec_plant_lowest_lcoe['p_gross_nom'],3))
     net_power_df.columns = [str(val[0]) + '_' + str(val[1]) for idx,val in enumerate(coordinates)]
+
     net_power_df['Time'] = timestamp
     net_power_df = net_power_df.set_index('Time')
     
     date_start = inputs['date_start']
     p_gross = inputs['p_gross']
     
-    ## Here, we save the net power production profiles and overall system characteristics as h5 files. For large countries, the files can get quite big
-    ## so the user should comment this out if these big files are not required.
-    
-    net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5'.replace(" ","_"),key='net_power',mode='w')
+    # net_power_df.to_hdf(new_path + f'Net_power_profiles_{studied_region}_{date_start[0:4]}_{-p_gross/1000}_MW_{cost_level}.h5'.replace(" ","_"),key='net_power',mode='w')
        
     for key,value in otec_plant_lowest_lcoe.items():
         if value.ndim == 1:

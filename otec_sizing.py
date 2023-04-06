@@ -5,7 +5,6 @@ Created on Tue Apr 27 11:16:02 2021
 @author: jkalanger
 """
 
-import math
 import numpy as np
 from general_scripts import saturation_pressures_and_temperatures,enthalpies_entropies,pressure_drop
 from parameters_and_constants import parameters_and_constants
@@ -86,9 +85,9 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
         
         while np.any(d_pipes > max_d):
             pipe_pairs[d_pipes > max_d] = pipe_pairs[d_pipes > max_d] + 1
-            d_pipes = np.sqrt(A_pipes*4/(math.pi*pipe_pairs))
+            d_pipes = np.sqrt(A_pipes*4/(np.pi*pipe_pairs))
                             
-        m_pipes = math.pi/4*((d_pipes+2*thickness)**2-d_pipes**2)*length*rho_pipe*pipe_pairs
+        m_pipes = np.pi/4*((d_pipes+2*thickness)**2-d_pipes**2)*length*rho_pipe*pipe_pairs
         
         num_pipes = pipe_pairs*2
         
@@ -138,16 +137,15 @@ def otec_sizing(T_WW_in,T_CW_in,del_T_WW,del_T_CW,inputs,cost_level):
     eff_net = -p_net/evaporator['Q_evap']
     
     if np.any(p_net > 0):
-        print('Infeasible systems detected and replaced by NaN')
+        # print('Infeasible systems detected and replaced by NaN')
         p_net = np.where(p_net > 0, np.nan, p_net)
-    
+   
     
     # Pack results
     
     otec_plant_nominal = {
                 'm_NH3_nom': m_NH3,
                 
-                'T_WW_in_nom': T_WW_in,
                 'del_T_WW' : del_T_WW,
                 'T_evap_nom' : T_evap,
                 'p_evap_nom' : p_evap,
@@ -163,7 +161,6 @@ def otec_sizing(T_WW_in,T_CW_in,del_T_WW,del_T_CW,inputs,cost_level):
                 'p_pump_CW_nom' : pipes_CW['p_pump'],
                 'eff_net_nom' : eff_net,
                 
-                'T_CW_in_nom': T_CW_in,
                 'del_T_CW' : del_T_CW,
                 'T_cond_nom' : T_cond,
                 'p_cond_nom' : p_cond,
