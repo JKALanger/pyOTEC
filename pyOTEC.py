@@ -9,7 +9,7 @@ Created on Tue Apr 27 11:16:02 2021
 ## With pyOTEC, you can create spatially and temporally resolved power generation profiles for any technically feasible system size and region.
 
 ## This is the main file used to generate 3-hourly power production profiles for ocean thermal energy conversion (OTEC). We try to document the code as
-## clear and transparent as possible. Please refer to the paper "TITLE PAPER" by Langer (2023) for further details and visualisations. If you find pyOTEC
+## clear and transparent as possible. Please refer to the paper "The global economic potential of ocean thermal energy conversion" by Langer et al. (2023) for further details and visualisations. If you find pyOTEC
 ## useful, please cite the abovementioned paper in your work. If you have any questions, please reach out to j.k.a.langer@tudelft.nl
 
 import os
