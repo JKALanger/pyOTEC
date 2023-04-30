@@ -16,7 +16,7 @@ pyOTEC designs ocean thermal energy conversion (OTEC) plants for best economic p
 
    python -m pip install motuclient==1.8.4 --no-cache-dir
  
-This installs the so called MOTU client which is used to download the seawater temperature data required to size the OTEC plants.
+   This installs the so called MOTU client which is used to download the seawater temperature data required to size the OTEC plants.
          
 7. Open the pyOTEC.py file in your preferred Python IDE (e.g. Spyder)
 8. Run the script and follow the instructions given by pyOTEC (i.e. provide the country and plant size)
