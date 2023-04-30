@@ -4,8 +4,8 @@ pyOTEC designs ocean thermal energy conversion (OTEC) plants for best economic p
 
 ## Step-by-step guide to set up and use pyOTEC
 
-Markup : 1. If you don't have it yet, download the latest version of Anaconda
-         2. Install the netCDF4 library by first opening Anaconda prompt and then executing the following command
+1. If you don't have it yet, download the latest version of Anaconda
+2. Install the netCDF4 library by first opening Anaconda prompt and then executing the following command
          
             conda install netCDF4
          
