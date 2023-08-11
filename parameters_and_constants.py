@@ -32,8 +32,6 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
         date_start = '2020-01-01 00:00:00'      
         date_end = '2020-12-31 21:00:00'
         
-        # depths = [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,60,70,80,90,100,125,150,200,250,300,350,400,500,600,700,800,900,1000,1250,1500,2000,2500,3000,4000,5000]
-
     t_resolution = '24H'    
 
     ## Physical properties
@@ -58,7 +56,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     
     pipe_material = [rho_pipe,roughness_pipe]
         
-    min_depth = -1000   # minimum depth in m
+    min_depth = -600   # minimum depth in m
     max_depth = -3000   # maximum depth in m (restricted by technical mooring limitations)
     
     threshold_AC_DC = 50    # threshold in km at which DC cables are chosen over AC cables
@@ -102,6 +100,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     length_WW_outlet = 60   # warm seawater outlet pipe length in m
     length_WW = length_WW_inlet + length_WW_outlet      # total length of warm seawater pipe pair 
     length_CW_inlet = 902.3392944335938  # cold seawater inlet pipe length in m, according to Copernicus dataset depth
+    # [643.5667724609375,763.3331298828125,902.3392944335938,1062.43994140625]
     length_CW_outlet = 60  # cold seawater outlet pipe length in m
     length_CW = length_CW_inlet + length_CW_outlet      # total length of cold seawater pipe pair 
     thickness = 0.09        # pipe thickness in m 

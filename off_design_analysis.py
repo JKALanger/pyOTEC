@@ -74,7 +74,7 @@ def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
                                         inputs,
                                         cost_level)
     
-    CAPEX,OPEX,LCOE_nom = capex_opex_lcoe(otec_plant_nominal,                                              
+    CAPEX,OPEX,LCOE_nom = capex_opex_lcoe(otec_plant_nominal_lowest_lcoe,                                              
                                 inputs,
                                 cost_level)
     

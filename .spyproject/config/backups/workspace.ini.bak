@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['pyOTEC.py', 'HYCOM_download_and_processing.py', 'capex_opex_lcoe.py', 'off_design_analysis.py', 'parameters_and_constants.py', 'otec_sizing.py']
+recent_files = ['pyOTEC.py', 'off_design_analysis.py', 'parameters_and_constants.py']
 
 [main]
 version = 0.2.0

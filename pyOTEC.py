@@ -36,12 +36,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
         os.mkdir(new_path)
         
     inputs = parameters_and_constants(p_gross,cost_level,'CMEMS')
-    year = inputs['date_start'][0:4]  
-    
-    # if os.path.isfile(new_path+f'net_power_profiles_{studied_region}_{year}__{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_")):
-    #     print(f'{studied_region} already analysed.')
-    # else:
-  
+    year = inputs['date_start'][0:4]   
         
     depth_WW = inputs['length_WW_inlet']
     depth_CW = inputs['length_CW_inlet']
@@ -94,7 +89,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     p_gross = inputs['p_gross']
     
     sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='id',float_format='%.3f')
-    p_net_profile.to_csv(new_path + f'net_power_profiles_{studied_region}_{year}__{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True)
+    p_net_profile.to_csv(new_path + f'net_power_profiles_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True)
     
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
@@ -103,10 +98,10 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
 
 if __name__ == "__main__":
     
-    ## Please enter the region that you want to analyse. Please check the file "Hdownload_ranges_per_region.csv"
+    ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
-    studied_region = input('++ Setting up HYCOM download ++\n\nEnter the region to be analysed.  ')
+    studied_region = input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     
     ## Please enter the gross power output of the OTEC plants. pyOTEC will determined the economically best system designs for on-design (nominal) and 
     ## off-design (operational) conditions. Make sure that you enter the power output in [kW] as a negative number. For example, if the user wants to size a
