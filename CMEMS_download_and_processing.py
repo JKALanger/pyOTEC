@@ -153,7 +153,7 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     ## Some data might either be missing (no timestamp) or faulty (e.g. T = -30000)
     ## First, we remove the faulty values
 
-    T_water_profiles[T_water_profiles < 0] = np.nan
+    T_water_profiles[T_water_profiles <= 0] = np.nan
     
     ## Here, we resample the dataset to the temporal resolution given in the parameters_and_constants file
     ## and to fill previously missing steps with NaN, which are then filled via linear interpolation

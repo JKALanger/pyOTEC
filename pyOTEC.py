@@ -71,7 +71,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     sites['longitude'] = coordinates_CW[:,0]
     sites['latitude'] = coordinates_CW[:,1]
     sites['p_net_nom'] = -otec_plants['p_net_nom'].T/1000
-    sites['AEP'] = -np.mean(otec_plants['p_net'],axis=0)*8760/1000000
+    sites['AEP'] = -np.nanmean(otec_plants['p_net'],axis=0)*8760/1000000
     sites['CAPEX'] = otec_plants['CAPEX'].T/1000000
     sites['LCOE'] = otec_plants['LCOE'].T
     sites['Configuration'] = otec_plants['Configuration'].T

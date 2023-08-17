@@ -99,7 +99,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     length_WW_inlet = 21.598819732666016    # warm seawater inlet pipe length in m, according to Copernicus dataset depth
     length_WW_outlet = 60   # warm seawater outlet pipe length in m
     length_WW = length_WW_inlet + length_WW_outlet      # total length of warm seawater pipe pair 
-    length_CW_inlet = 902.3392944335938  # cold seawater inlet pipe length in m, according to Copernicus dataset depth
+    length_CW_inlet = 1062.43994140625  # cold seawater inlet pipe length in m, according to Copernicus dataset depth
     # [643.5667724609375,763.3331298828125,902.3392944335938,1062.43994140625]
     length_CW_outlet = 60  # cold seawater outlet pipe length in m
     length_CW = length_CW_inlet + length_CW_outlet      # total length of cold seawater pipe pair 

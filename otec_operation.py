@@ -60,6 +60,11 @@ def otec_operation(otec_plant_nom,T_WW_profiles,T_CW_profiles,inputs):
     p_pump_total_ts = p_pump_NH3_ts + p_pump_WW_ts + p_pump_CW_ts
     
     p_net_ts = (p_gross_ts*inputs['eff_turb_el']*inputs['eff_turb_mech'] + p_pump_total_ts)*inputs['eff_trans']
+    
+    if np.any(p_net_ts > 0):
+        # print('Infeasible systems detected and replaced by NaN')
+        p_net_ts = np.where(p_net_ts > 0, np.nan, p_net_ts)
+    
     eff_net_ts = -p_net_ts/Q_evap_ts
     
     LCOE_ts = lcoe_time_series(otec_plant_nom,inputs,p_net_ts)
