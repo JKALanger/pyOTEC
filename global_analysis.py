@@ -9,6 +9,7 @@ import os
 import time
 import pandas as pd
 import numpy as np
+import platform
 
 from parameters_and_constants import parameters_and_constants
 from off_design_analysis import off_design_analysis
@@ -16,9 +17,12 @@ from CMEMS_download_and_processing import download_data,data_processing,load_tem
    
 def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     start = time.time()
-    parent_dir = os.getcwd()
+    parent_dir = os.getcwd() + 'Data_Results/'
     
-    new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
+    if platform.system() == 'Windows':
+        new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
+    else :
+        new_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_"))
     
     if os.path.isdir(new_path):
         pass

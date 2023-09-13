@@ -19,6 +19,24 @@ import time
 ## below. Essentially, we contact CMEMS's servers via an url created from input data like desired year, water depth, coordinates, etc, and download the data
 ## after the connection to the server has been established successfully.
 
+def save_credentials():
+    # Check if credentials.txt exists
+    if os.path.exists("credentials.txt"):
+        pass
+    else:
+        print("Please enter your CMEMS username and password to access the data")
+        # Demander à l'utilisateur son nom d'utilisateur et son mot de passe
+        username = input("Username : ")
+        password = input("Password : ")
+
+        # Créer le fichier pour stocker le nom d'utilisateur et le mot de passe
+        with open("credentials.txt", "w") as file:
+            file.write(f"{username},{password}\n")
+
+        print("Credentials saved in 'credentials.txt'. They can be changed directly from the file from now on.")
+
+
+
 def download_data(cost_level,inputs,studied_region,new_path):
     
     ## The csv file below stores all countries and territories that have OTEC resources, their coordinates, and electricity demand in 2019.
@@ -62,7 +80,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
                 filename = f'T_{round(depth,0)}m_{date_start[0:4]}_{studied_region}_{part+1}.nc'.replace(" ","_")
                 filepath = os.path.join(new_path, filename)
                 files.append(filepath)
-                
+                directory_data_results='Data_Results/'
                 if os.path.isfile(filepath):           
                     print('File already exists. No download necessary.')
                     continue
@@ -70,9 +88,9 @@ def download_data(cost_level,inputs,studied_region,new_path):
                     
                     ## here we construct the URL with which we request the data from CMEMS's servers.
                     
-                    motu_request = ('python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
+                    motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
                                     f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
-                                    f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
+                                    f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
                     
                     os.system(motu_request)
           

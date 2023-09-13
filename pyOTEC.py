@@ -16,32 +16,37 @@ import os
 import time
 import pandas as pd
 import numpy as np
+import platform
 
-from parameters_and_constants import parameters_and_constants
-from off_design_analysis import off_design_analysis
-from CMEMS_download_and_processing import download_data,data_processing,load_temperatures
+import CMEMS_download_and_processing as Cdp
+import parameters_and_constants as pc
+import off_design_analysis as oda
+
 
 ## Here we define the main function on which pyOTEC is based. The inputs are the studied_region, gross power output of the OTEC plant, and the cost level
 ## Please scroll down to the bottom for further details on the inputs.
    
 def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     start = time.time()
-    parent_dir = os.getcwd()
+    parent_dir = os.getcwd() + '/Data_Results/'
     
-    new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
+    if platform.system() == 'Windows':
+        new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
+    else :
+        new_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_"))
     
     if os.path.isdir(new_path):
         pass
     else:
-        os.mkdir(new_path)
+        os.makedirs(new_path)
         
-    inputs = parameters_and_constants(p_gross,cost_level,'CMEMS')
+    inputs = pc.parameters_and_constants(p_gross,cost_level,'CMEMS')
     year = inputs['date_start'][0:4]   
         
     depth_WW = inputs['length_WW_inlet']
     depth_CW = inputs['length_CW_inlet']
       
-    files = download_data(cost_level,inputs,studied_region,new_path)
+    files = Cdp.download_data(cost_level,inputs,studied_region,new_path)
     
     print('\n++ Processing seawater temperature data ++\n')   
     
@@ -53,18 +58,18 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     h5_file_CW = os.path.join(new_path, f'T_{round(depth_CW,0)}m_{year}_{studied_region}.h5'.replace(" ","_"))
     
     if os.path.isfile(h5_file_CW):
-        T_CW_profiles, T_CW_design, coordinates_CW, id_sites, timestamp, inputs, nan_columns_CW = load_temperatures(h5_file_CW, inputs)
+        T_CW_profiles, T_CW_design, coordinates_CW, id_sites, timestamp, inputs, nan_columns_CW = Cdp.load_temperatures(h5_file_CW, inputs)
         print(f'{h5_file_CW} already exist. No processing necessary.')
     else:
-        T_CW_profiles, T_CW_design, coordinates_CW, id_sites, timestamp, inputs, nan_columns_CW = data_processing(files[int(len(files)/2):int(len(files))],sites_df,inputs,studied_region,new_path,'CW')
+        T_CW_profiles, T_CW_design, coordinates_CW, id_sites, timestamp, inputs, nan_columns_CW = Cdp.data_processing(files[int(len(files)/2):int(len(files))],sites_df,inputs,studied_region,new_path,'CW')
     
     if os.path.isfile(h5_file_WW):
-        T_WW_profiles, T_WW_design, coordinates_WW, id_sites, timestamp, inputs, nan_columns_WW = load_temperatures(h5_file_WW, inputs)
+        T_WW_profiles, T_WW_design, coordinates_WW, id_sites, timestamp, inputs, nan_columns_WW = Cdp.load_temperatures(h5_file_WW, inputs)
         print(f'{h5_file_WW} already exist. No processing necessary.')
     else:
-        T_WW_profiles, T_WW_design, coordinates_WW, id_sites, timestamp, inputs, nan_columns_WW = data_processing(files[0:int(len(files)/2)],sites_df,inputs,studied_region,new_path,'WW',nan_columns_CW)
+        T_WW_profiles, T_WW_design, coordinates_WW, id_sites, timestamp, inputs, nan_columns_WW = Cdp.data_processing(files[0:int(len(files)/2)],sites_df,inputs,studied_region,new_path,'WW',nan_columns_CW)
          
-    otec_plants = off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inputs,coordinates_CW,timestamp,studied_region,new_path,cost_level)  
+    otec_plants = oda.off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inputs,coordinates_CW,timestamp,studied_region,new_path,cost_level)  
     
     sites = pd.DataFrame()
     sites.index = np.squeeze(id_sites)
@@ -98,6 +103,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
 
 if __name__ == "__main__":
     
+    Cdp.save_credentials()
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     

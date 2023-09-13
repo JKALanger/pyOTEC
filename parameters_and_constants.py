@@ -18,7 +18,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
         time_origin = '2000-01-01 00:00:00' 
         
         year = 2011           
-        date_start = '2011-01-01 00:00:00'      
+        date_start = '2011-01-01 00:00:00'
         date_end = '2011-12-31 21:00:00'
         time_stride = 1
             
