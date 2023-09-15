@@ -1,3 +1,4 @@
+#%%
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr 27 11:16:02 2021
@@ -21,6 +22,7 @@ import platform
 import CMEMS_download_and_processing as Cdp
 import parameters_and_constants as pc
 import off_design_analysis as oda
+import create_plots as cp
 
 
 ## Here we define the main function on which pyOTEC is based. The inputs are the studied_region, gross power output of the OTEC plant, and the cost level
@@ -29,24 +31,27 @@ import off_design_analysis as oda
 def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     start = time.time()
     parent_dir = os.getcwd() + '/Data_Results/'
+    inputs = pc.parameters_and_constants(p_gross,cost_level,'CMEMS')
+    year = inputs['date_start'][0:4]
     
     if platform.system() == 'Windows':
-        new_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
+        dl_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_")) 
+        new_path = dl_path + f'{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}\\'.replace(" ","_")
     else :
-        new_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_"))
+        dl_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_")) 
+        new_path = dl_path+ f'{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}/'.replace(" ","_")
     
     if os.path.isdir(new_path):
         pass
     else:
         os.makedirs(new_path)
         
-    inputs = pc.parameters_and_constants(p_gross,cost_level,'CMEMS')
-    year = inputs['date_start'][0:4]   
+
         
     depth_WW = inputs['length_WW_inlet']
     depth_CW = inputs['length_CW_inlet']
       
-    files = Cdp.download_data(cost_level,inputs,studied_region,new_path)
+    files = Cdp.download_data(cost_level,inputs,studied_region,dl_path)
     
     print('\n++ Processing seawater temperature data ++\n')   
     
@@ -69,7 +74,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     else:
         T_WW_profiles, T_WW_design, coordinates_WW, id_sites, timestamp, inputs, nan_columns_WW = Cdp.data_processing(files[0:int(len(files)/2)],sites_df,inputs,studied_region,new_path,'WW',nan_columns_CW)
          
-    otec_plants = oda.off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inputs,coordinates_CW,timestamp,studied_region,new_path,cost_level)  
+    otec_plants,capex_opex_comparison = oda.off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inputs,coordinates_CW,timestamp,studied_region,new_path,cost_level)  
     
     sites = pd.DataFrame()
     sites.index = np.squeeze(id_sites)
@@ -96,10 +101,15 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='id',float_format='%.3f')
     p_net_profile.to_csv(new_path + f'net_power_profiles_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True)
     
+    
+    cost_dict = cp.plot_capex_opex(new_path,capex_opex_comparison,sites)
+    #enregistrer ce résultat afin qu'on puisse l'utiliser pour comparer les LCOE etc pour différentes puissances
+    
+    
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
     
-    return otec_plants, sites_df
+    return otec_plants, sites_df,capex_opex_comparison
 
 if __name__ == "__main__":
     
@@ -107,17 +117,17 @@ if __name__ == "__main__":
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
-    studied_region = input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
+    studied_region = "Réunion"    # input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     
     ## Please enter the gross power output of the OTEC plants. pyOTEC will determined the economically best system designs for on-design (nominal) and 
     ## off-design (operational) conditions. Make sure that you enter the power output in [kW] as a negative number. For example, if the user wants to size a
     ## 136 MW_gross system, the user needs to enter -136000
     
-    p_gross = int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
+    p_gross = -10000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
     
     ## OTEC's costs are still uncertain today and estimations in literature can vary significantly.
     ## Therefore, we offer two cost models from which the user can choose: "low_cost" and "high_cost"
     
     cost_level = 'low_cost'
     
-    otec_plants, sites = pyOTEC(studied_region,p_gross,cost_level)
+    otec_plants, sites,capex_opex_comparison = pyOTEC(studied_region,p_gross,cost_level)

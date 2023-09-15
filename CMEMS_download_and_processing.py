@@ -25,11 +25,11 @@ def save_credentials():
         pass
     else:
         print("Please enter your CMEMS username and password to access the data")
-        # Demander à l'utilisateur son nom d'utilisateur et son mot de passe
+        # Ask the username its username and password
         username = input("Username : ")
         password = input("Password : ")
 
-        # Créer le fichier pour stocker le nom d'utilisateur et le mot de passe
+        # Create the file containing the informations
         with open("credentials.txt", "w") as file:
             file.write(f"{username},{password}\n")
 
@@ -65,7 +65,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
         ## We store the filenames and their paths, so that the seawater temperature data can be accessed by pyOTEC later.
         
         files = []
-        
+        print(depth_WW,depth_CW)
         for depth in [depth_WW,depth_CW]:
             for part in range(0,parts):
                                 
@@ -81,6 +81,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
                 filepath = os.path.join(new_path, filename)
                 files.append(filepath)
                 directory_data_results='Data_Results/'
+                print(filepath)
                 if os.path.isfile(filepath):           
                     print('File already exists. No download necessary.')
                     continue
