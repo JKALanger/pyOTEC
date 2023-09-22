@@ -102,14 +102,14 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     p_net_profile.to_csv(new_path + f'net_power_profiles_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True)
     
     
-    cost_dict = cp.plot_capex_opex(new_path,capex_opex_comparison,sites)
-    #enregistrer ce résultat afin qu'on puisse l'utiliser pour comparer les LCOE etc pour différentes puissances
+    cost_dict = cp.plot_capex_opex(new_path,capex_opex_comparison,sites,p_gross)
+    #enregistrer ce résultat afin qu'on puisse l'utiliser pour comparer les LCOE etc pour différentes puissances ou différentes hypothèses de calculs (ex: épaisseur de tuyau)
     
     
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
     
-    return otec_plants, sites_df,capex_opex_comparison
+    return otec_plants, sites_df,capex_opex_comparison,cost_dict
 
 if __name__ == "__main__":
     
@@ -117,17 +117,17 @@ if __name__ == "__main__":
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
-    studied_region = "Réunion"    # input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
+    studied_region = "Réunion"#"Aruba"# "Réunion"    # input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     
     ## Please enter the gross power output of the OTEC plants. pyOTEC will determined the economically best system designs for on-design (nominal) and 
     ## off-design (operational) conditions. Make sure that you enter the power output in [kW] as a negative number. For example, if the user wants to size a
     ## 136 MW_gross system, the user needs to enter -136000
     
-    p_gross = -10000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
+    p_gross = -3000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
     
     ## OTEC's costs are still uncertain today and estimations in literature can vary significantly.
     ## Therefore, we offer two cost models from which the user can choose: "low_cost" and "high_cost"
     
     cost_level = 'low_cost'
     
-    otec_plants, sites,capex_opex_comparison = pyOTEC(studied_region,p_gross,cost_level)
+    otec_plants, sites,capex_opex_comparison,cost_dict = pyOTEC(studied_region,p_gross,cost_level)

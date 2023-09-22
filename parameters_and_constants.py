@@ -108,7 +108,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     u_pipes = 2.1          # nominal flow velocity in seawater pipes in m/s
     u_HX = u_pipes/2     # nominal flow velocity in heat exchangers in m/s
     pressure_drop_nom = 100     # maximum pressure in 
-    max_d = 8               # maximum inner seawater pipe diameter in m
+    max_d = 8             # maximum inner seawater pipe diameter in m
     max_p = 100             # maximum pressure drop in kPa
     
     pipe_properties = [length_WW,

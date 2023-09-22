@@ -45,7 +45,7 @@ def extract_costs_at_best_LCOE_location(capex_opex_comparison):
     
 
 def prepare_plot_capex_opex(new_path,capex_opex_comparison,sites):
-    """Prepare the x and y axis for the plot base"""
+    """Prepare the x and y axis for the plot of capex and opex"""
     best_LCOE_location_index,cost_dict = extract_costs_at_best_LCOE_location(capex_opex_comparison)
 
     T_WW=[sites['T_WW_min'].iloc[best_LCOE_location_index] ,sites['T_WW_med'].iloc[best_LCOE_location_index] ,sites['T_WW_max'].iloc[best_LCOE_location_index] ]
@@ -78,5 +78,7 @@ def extract_percentage(capex_opex_comparison,opex_coef):
         total_CAPEX.append(total_CAPEX_i)
         for j,key in enumerate(keys):
             CAPEX_percentage[i][j]=best_LCOE_dict[key][i]/total_CAPEX_i*100
+            
+    print(total_CAPEX[4])
     
     return keys,CAPEX_percentage,total_CAPEX

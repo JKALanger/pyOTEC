@@ -53,7 +53,7 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
     ## Load and unpack inputs to improve readibility of code below   
     
     rho_pipe,roughness_pipe = inputs['pipe_material']
-    
+    SDR_ratio = 16
     length_WW, \
     length_CW, \
     thickness, \
@@ -83,13 +83,18 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
         
         d_pipes = np.ones(np.size(T_in),dtype=np.float64)*(max_d+0.1)
         
+        
+        
         while np.any(d_pipes > max_d):
             pipe_pairs[d_pipes > max_d] = pipe_pairs[d_pipes > max_d] + 1
             d_pipes = np.sqrt(A_pipes*4/(np.pi*pipe_pairs))
+            thickness = d_pipes/SDR_ratio
                             
         m_pipes = np.pi/4*((d_pipes+2*thickness)**2-d_pipes**2)*length*rho_pipe*pipe_pairs
         
         num_pipes = pipe_pairs*2
+        
+        print(d_pipes,thickness)
         
         p_drop = pressure_drop(T_in,u_pipes,d_pipes,rho,roughness_pipe,length,K_L,u_HX)
        

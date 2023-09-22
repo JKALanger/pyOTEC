@@ -88,7 +88,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
                 else:  
                     
                     ## here we construct the URL with which we request the data from CMEMS's servers.
-                    
+                    #change python in python3 if the following command isn't working
                     motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
                                     f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
                                     f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
