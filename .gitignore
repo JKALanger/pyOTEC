@@ -1,10 +1,14 @@
 #Ignore the copernicus username and password 
 credentials.txt
 
+#Ignore the files containing tests and tools for encoding problems
+convert_csv.py
+test.py
+
 #Ignore the data and results obtained after using pyOTEC
 Data_Results/
 
-#Ignore cache files
+#Ignore cache folders
 .idea/
 .spyproject/
 

@@ -45,7 +45,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
     user = credentials[0]
     password = credentials[1] #getpass.getpass("Enter your password: ")
     
-    regions = pd.read_csv('download_ranges_per_region.csv',delimiter=';',encoding='latin-1')  
+    regions = pd.read_csv('download_ranges_per_region.csv',delimiter=';')  
         
     if np.any(regions['region'] == studied_region):
         
@@ -65,7 +65,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
         ## We store the filenames and their paths, so that the seawater temperature data can be accessed by pyOTEC later.
         
         files = []
-        print(depth_WW,depth_CW)
+        # print(depth_WW,depth_CW)
         for depth in [depth_WW,depth_CW]:
             for part in range(0,parts):
                                 
@@ -105,11 +105,9 @@ def download_data(cost_level,inputs,studied_region,new_path):
 
 
 def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_columns = None):
-    
     ## Here we convert the pandas Dataframe storing site-specific data into a numpy array
     
     sites = np.vstack((sites_df['longitude'],sites_df['latitude'],sites_df['dist_shore'],sites_df['id'])).T
-    
     ## The "for file in files" was made for countries and territories that stretch across the East/West border, like Fiji and New Zealand.
     ## These regions are split into two parts that cover the regions' Eastern and Western side, respectively.
 
@@ -241,7 +239,7 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     pd.DataFrame(coordinates).to_hdf(new_path + filename,key='coordinates')
     pd.DataFrame(nan_columns[1]).to_hdf(new_path + filename,key='nan_columns')
     pd.DataFrame(id_sites).to_hdf(new_path + filename,key='id_sites')
-               
+    
     print(f'Processing {filename} successful. h5 temperature profiles exported.\n')
             
     return T_water_profiles, T_water_design, coordinates, id_sites, T_water_profiles_df.index, inputs, nan_columns

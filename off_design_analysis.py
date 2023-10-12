@@ -17,7 +17,7 @@ from otec_operation import otec_operation
 def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
     
     # inputs = parameters_and_constants(cost_level)
-    
+   
     del_T_WW_min, \
     del_T_CW_min, \
     del_T_WW_max, \
@@ -102,7 +102,7 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
     for index_cw,t_cw_design in enumerate(T_CW_design):
         for index_ww,t_ww_design in enumerate(T_WW_design):
             
-            print(f'Configuration {index_ww + index_cw*3 + 1}')
+            # print(f'Configuration {index_ww + index_cw*3 + 1}')
             
             otec_plant_nominal_lowest_lcoe,all_CAPEX_OPEX = on_design_analysis(t_ww_design,t_cw_design,inputs,cost_level)          
             otec_plant_off_design = otec_operation(otec_plant_nominal_lowest_lcoe,T_WW_profiles,T_CW_profiles,inputs)

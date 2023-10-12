@@ -27,7 +27,7 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
         capex_turbine = 328*(136000/-p_gross)**0.16
         capex_HX = 226*(80000/-p_gross)**0.16
         capex_pump = 1674*(5600/p_pump_total)**0.38
-        capex_pipes = 11       
+        capex_pipes = 11  # to divide : material, fabrication, transport, installation cost
         capex_structure = 4465*(28100/-p_gross)**0.35
         capex_deploy = 650
         capex_controls = 3113*(3960/-p_gross)**0.70
@@ -69,8 +69,6 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     
     CAPEX_total = CAPEX_wo_extra+CAPEX_extra
     
-    #SOMMER LA THERMODYNAMIQUE
-    #environ 1/4 du cout de mooring + platform pour mooring
     
     OPEX = CAPEX_total*opex       
         
@@ -85,12 +83,12 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     'cond_CAPEX': CAPEX_cond[0],
     'pump_CAPEX': CAPEX_pump,
     'pipes_CAPEX': CAPEX_pipes,
-    'cable_CAPEX': CAPEX_cable[0],
     # 'structure_CAPEX': CAPEX_structure[0],
     'mooring_CAPEX': CAPEX_mooring[0],
     'platform_CAPEX': CAPEX_platform[0],
     'deploy_CAPEX': CAPEX_deploy[0],
     'man_CAPEX': CAPEX_man[0],
+    'cable_CAPEX': CAPEX_cable[0],
     'extra_CAPEX': CAPEX_extra[0],
     'OPEX': OPEX[0],
     'LCOE':LCOE_nom[0]

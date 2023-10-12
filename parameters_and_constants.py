@@ -37,14 +37,14 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     ## Physical properties
     
     rho_NH3 = 625       # density of ammonia in kg/m3
-    rho_WW = 1024       # density of warm seawater in kg/m3
+    rho_WW = 1024       # density of warm seawater in kg/m3 : to replace by calculated value from Equation of seawater : need to download salinity as well in Copernicus
     rho_CW = 1027       # density of cold seawater in kg/m3
     
     cp_water = 4.0      # specific heat capacity of seawater in kJ/kgK
     
     fluid_properties = [rho_NH3,rho_WW,rho_CW,cp_water]
     
-    roughness_pipe = 0.0053     # roughness of pipe in m
+    roughness_pipe = 0.03 #053     # roughness of pipe in m : reference to find and update
     
     if cost_level == 'low_cost':        
         rho_pipe = 995               # density of HDPE pipe in kg/m3
@@ -100,16 +100,16 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     length_WW_outlet = 60   # warm seawater outlet pipe length in m
     length_WW = length_WW_inlet + length_WW_outlet      # total length of warm seawater pipe pair 
     length_CW_inlet = 1062.43994140625  # cold seawater inlet pipe length in m, according to Copernicus dataset depth
-    # [643.5667724609375,763.3331298828125,902.3392944335938,1062.43994140625]
-    length_CW_outlet = 60  # cold seawater outlet pipe length in m
+    # [643.5667724609375,763.3331298828125,902.3392944335938,1062.43994140625] #check for different depth
+    length_CW_outlet = 60  # cold seawater outlet pipe length in m maybe : consider increasing it to discharge water at the layer with similar temperature (15 deg : 200m)
     length_CW = length_CW_inlet + length_CW_outlet      # total length of cold seawater pipe pair 
-    thickness = 0.09        # pipe thickness in m 
+    thickness = 0.09        # pipe thickness in m : updated in otec_sizing with the SDR ratio approach
     K_L = 100               # pressure drop coefficient for both evaporator and condenser (unitless)
     u_pipes = 2.1          # nominal flow velocity in seawater pipes in m/s
     u_HX = u_pipes/2     # nominal flow velocity in heat exchangers in m/s
     pressure_drop_nom = 100     # maximum pressure in 
     max_d = 8             # maximum inner seawater pipe diameter in m
-    max_p = 100             # maximum pressure drop in kPa
+    max_p = 100             # maximum pressure drop in kPa : why ? is it based on pump NPSH calculation ? 
     
     pipe_properties = [length_WW,
                        length_CW,
@@ -147,7 +147,7 @@ def parameters_and_constants(p_gross=-136000,cost_level='low_cost',data='CMEMS')
     
     ## Economic assumptions
     
-    lifetime = 30
+    lifetime = 30 #years
     discount_rate = 0.1
     crf = discount_rate*(1+discount_rate)**lifetime/((1+discount_rate)**lifetime-1) 
     
