@@ -36,7 +36,10 @@ def plot_capex_opex(new_path, capex_opex_comparison, sites, p_gross,studied_regi
     else:
         os.makedirs(new_path+'/Details')
     
+    # plot_details(new_path,T_WW,T_CW,labels,array_plot_cost,cost_dict,keys,array_CAPEX_percentage)
     bar_plot(new_path,cost_dict,array_CAPEX_percentage,T_WW,T_CW,p_gross)
+    
+    return cost_dict,best_LCOE_location_index
 
 
 
@@ -49,8 +52,8 @@ def bar_plot(new_path,cost_dict,array_CAPEX_percentage,T_WW,T_CW,p_gross):
                     ['platform_CAPEX', 'mooring_CAPEX'],
                     ['cable_CAPEX', 'deploy_CAPEX', 'man_CAPEX', 'extra_CAPEX']]
 
-    #colors are done by hand, when black is selected, the color isn't displayed because the corresponding bar height is nul (value is 0)
-    #colors are written in rbga, with the 4th parameter being the opacity. will need a function in the future
+    #colors are done by hand. When black is selected, the color isn't displayed because the corresponding bar height is nul (value is 0)
+    #colors are written in rbga, with the 4th parameter being the opacity. will need a function in the future (but too much time spent on this already)
     color_array = [[(0.580, 0.404, 0.741,1),    'grey', (0.051, 0.467, 0.706, 1.0),(0.8,0,0, 1)],
                    [(0.580, 0.404, 0.741,0.65), 'black',(0.051, 0.467, 0.706, 0.5),(0.8,0,0, 0.65)],
                    [(0.580, 0.404, 0.741,0.40), 'black','black'                   ,(0.8,0,0, 0.4)],

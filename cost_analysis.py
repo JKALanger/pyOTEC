@@ -112,6 +112,6 @@ def extract_percentage(capex_opex_comparison,opex_coef):
         for j,key in enumerate(keys):
             CAPEX_percentage[i][j]=best_LCOE_dict[key][i]/total_CAPEX_i*100
             
-    print('Total median CAPEX :',total_CAPEX[4])
+    # print('Total median CAPEX :',total_CAPEX[4])
     
     return keys,CAPEX_percentage,total_CAPEX

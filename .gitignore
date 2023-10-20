@@ -7,6 +7,7 @@ test.py
 
 #Ignore the data and results obtained after using pyOTEC
 Data_Results/
+Comparison/
 
 #Ignore cache folders
 .idea/
