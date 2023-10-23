@@ -25,6 +25,7 @@ pyOTEC designs ocean thermal energy conversion (OTEC) plants for best economic p
 
 ## Citation
 
-When using pyOTEC, e.g. in a scientific publication, please refer to this GitHub repository and the following paper (October 2023: still under review, will be added soon)
 
-Langer J, Blok K. The global techno-economic potential of floating, closed-cycle ocean thermal energy conversion. Under review.
+When using pyOTEC, e.g. in a scientific publication, please refer to the following paper:
+
+Langer, J., Blok, K. The global techno-economic potential of floating, closed-cycle ocean thermal energy conversion. J. Ocean Eng. Mar. Energy (2023). https://doi.org/10.1007/s40722-023-00301-1
