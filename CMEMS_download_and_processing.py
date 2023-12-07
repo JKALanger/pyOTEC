@@ -27,7 +27,7 @@ def save_credentials():
         print("Please enter your CMEMS username and password to access the data")
         # Ask the username its username and password
         username = input("Username : ")
-        password = input("Password : ")
+        password = getpass.getpass()
 
         # Create the file containing the informations
         with open("credentials.txt", "w") as file:

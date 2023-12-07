@@ -146,7 +146,8 @@ if __name__ == "__main__":
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
-    studied_region = "Comores" #Comores"#"Aruba"# "Reunion"# input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
+    # studied_region = "Comores" #Comores"#"Aruba"# "Reunion"# input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
+    studied_region = input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     
     # # OTEC's costs are still uncertain today and estimations in literature can vary significantly.
     # # Therefore, we offer two cost models from which the user can choose: "low_cost" and "high_cost"
@@ -156,8 +157,8 @@ if __name__ == "__main__":
     ## off-design (operational) conditions. Make sure that you enter the power output in [kW] as a negative number. For example, if the user wants to size a
     ## 136 MW_gross system, the user needs to enter -136000
     
-    p_gross = -3000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
-    
+    # p_gross = -3000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
+    p_gross = int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
 
     
     otec_plants, sites,capex_opex_comparison,cost_dict = pyOTEC(studied_region,p_gross,cost_level)

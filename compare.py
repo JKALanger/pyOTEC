@@ -65,7 +65,7 @@ def extract_variable_path(path,string_left,string_right):
 
 def func_powerlaw(x, m, c, c0):
     """hyperbolic funtion for fitting the results"""
-    return c0 + x**m * c
+    return c0 + 1/(x**m) * c
 
 
 
@@ -148,7 +148,7 @@ def compare_economics_locations(locations):
                 x_list = sorted_pnet
                 x_label = "Net"
 
-            sol2, divers = curve_fit(func_powerlaw, x_list, sorted_LCOE, p0 = np.asarray([-1,10**5,0]))
+            sol2, divers = curve_fit(func_powerlaw, x_list, sorted_LCOE, p0 = np.asarray([0.5,100,20]))
 
             # sol2 contains the estimated parameters m,c and c0.
             m_fit, c_fit, c0_fit = sol2
@@ -252,6 +252,6 @@ plt.savefig("Comparison/pipe_CAPEX_" + x_label + label_locations + '.png',
 plt.close()
 
 
-
+#Rajouter ligne horizontale pour le LCOE d'autres énergies à la Réunion
 
         
