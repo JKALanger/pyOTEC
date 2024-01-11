@@ -27,11 +27,11 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
         capex_turbine = 328*(136000/-p_gross)**0.16
         capex_HX = 226*(80000/-p_gross)**0.16
         capex_pump = 1674*(5600/p_pump_total)**0.38
-        capex_pipes = 11  # to divide : material, fabrication, transport, installation cost
+        capex_pipes = 9  # to divide : material, fabrication, transport, installation cost
         capex_structure = 4465*(28100/-p_gross)**0.35
         capex_deploy = 650
         capex_controls = 3113*(3960/-p_gross)**0.70
-        capex_extra = 0.05    
+        capex_extra = 0.05
         opex = 0.03          
     elif cost_level == 'high_cost':        
         capex_turbine = 512*(136000/-p_gross)**0.16
@@ -98,7 +98,6 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     # OPEX[0,1061]
     # p_net[0,1061]
     # LCOE_nom[0,1061]
-    # décortiquer sujet installation
     # a = T_WW_profiles[:,1061]
     
     if np.any(LCOE_nom <= 0):

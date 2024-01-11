@@ -53,10 +53,9 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
     ## Load and unpack inputs to improve readibility of code below   
     
     rho_pipe,roughness_pipe = inputs['pipe_material']
-    SDR_ratio = 16 # from bibliography + calculation by Lucas Vatinel, report in progress 
     length_WW, \
     length_CW, \
-    thickness, \
+    SDR_ratio, \
     K_L, \
     u_pipes, \
     u_HX, \
@@ -66,30 +65,8 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
     
     u_pipes = np.ones(np.size(T_in),dtype=np.float64)*u_pipes
     p_drop = np.ones(np.size(T_in),dtype=np.float64)*pressure_drop_nom
+    
 
-    
-    # u_pipes[p_drop >= max_p] = u_pipes[p_drop >= max_p] - 0.1
-    # u_HX = u_pipes/2
-    
-    # A_pipes = m_water/rho/u_pipes
-    
-    # # To avoid making the same calculation twice for inlet and outlet pipe, we assume that they form one single pipe
-    # # with the same properties (diameter, thickness, etc.) and loading (water flow, pressure drop, etc.)
-    # # Therefore, we don't count the individual inlet and outlet pipes, but the pipe pairs. Once we have the required pairs,
-    # # we multiply the pairs with 2 to obtain the number of actual pipes needed.
-    
-    # pipe_pairs = np.zeros(np.size(T_in),dtype=np.float64)       
-    
-    # d_pipes = np.ones(np.size(T_in),dtype=np.float64)*(max_d+0.1)
-
-    # m_pipes = np.pi/4*((d_pipes+2*thickness)**2-d_pipes**2)*length*rho_pipe*pipe_pairs
-
-    # num_pipes = pipe_pairs*2
-    
-    # # print(d_pipes,thickness)
-    
-    # p_drop = pressure_drop(T_in,u_pipes,d_pipes,rho,roughness_pipe,length,K_L,u_HX)
-        
     while np.any(p_drop >= max_p):
         
         u_pipes[p_drop >= max_p] = u_pipes[p_drop >= max_p] - 0.1
@@ -105,6 +82,7 @@ def seawater_pipe_sizing(T_in,m_water,rho,length,inputs):
         pipe_pairs = np.zeros(np.size(T_in),dtype=np.float64)       
         
         d_pipes = np.ones(np.size(T_in),dtype=np.float64)*(max_d+0.1)
+        thickness = d_pipes/SDR_ratio
         
         
         

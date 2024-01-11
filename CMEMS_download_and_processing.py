@@ -14,6 +14,7 @@ import numpy as np
 import datetime
 import os
 import time
+import copernicus_marine_client as copernicusmarine
 
 ## We use seawater temperature data from CMEMS for our OTEC analysis. If the data does not exist in the work folder yet, then it is downloaded with the function
 ## below. Essentially, we contact CMEMS's servers via an url created from input data like desired year, water depth, coordinates, etc, and download the data
@@ -86,14 +87,33 @@ def download_data(cost_level,inputs,studied_region,new_path):
                     print('File already exists. No download necessary.')
                     continue
                 else:  
+                    # Download the subset of data
+                    # print(directory_data_results+studied_region.replace(" ","_"))
+                    copernicusmarine.subset(
+                        dataset_id = "cmems_mod_glo_phy_my_0.083_P1D-m",
+                        variables = ['thetao'],
+                        minimum_longitude = west,
+                        maximum_longitude = east,
+                        minimum_latitude = south,
+                        maximum_latitude = north,
+                        minimum_depth = depth,
+                        maximum_depth = depth,
+                        start_datetime = date_start,
+                        end_datetime = date_end,
+                        force_download = True,
+                        output_directory = directory_data_results+studied_region.replace(" ","_"),
+                        output_filename = filename
+                    )
                     
                     ## here we construct the URL with which we request the data from CMEMS's servers.
                     #change python in python3 if the following command isn't working
-                    motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
-                                    f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
-                                    f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
+                    # motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
+                    #                 f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
+                    #                 f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
                     
-                    os.system(motu_request)
+                    # os.system(motu_request)
+
+                    # copernicusmarine.subset(motu_api_request = motu_request)
           
                     end_time = time.time()
                     print(f'{filename} saved. Time for download: ' + str(round((end_time-start_time)/60,2)) + ' minutes.')
@@ -123,7 +143,11 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     
     time = T_water_nc.variables['time'][:]
     time_origin = datetime.datetime.strptime(inputs['time_origin'], '%Y-%m-%d %H:%M:%S') 
-    timestamp = [time_origin + datetime.timedelta(hours=step) for idx,step in enumerate(time)]  
+    # print(time)
+    # print(datetime.timedelta(hours=time[0]))
+    
+    
+    timestamp = [time_origin + datetime.timedelta(hours=int(step)) for idx,step in enumerate(time)]  
     
     ## Earlier, we downloaded the data across a rectangular field defined by the input coordinates. However, not every data point is suitable
     ## for OTEC (e.g. points on land, too shallow/ deep water, inside marine protection areas, etc). In this loop, we check which downloaded data points

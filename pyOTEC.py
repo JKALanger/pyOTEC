@@ -25,6 +25,7 @@ import parameters_and_constants as pc
 import off_design_analysis as oda
 import create_plots as cp
 import cost_analysis as co
+import copernicus_marine_client as copernicusmarine
 
 
 
@@ -38,10 +39,10 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     year = inputs['date_start'][0:4]
     
     if platform.system() == 'Windows':
-        dl_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_")) 
+        dl_path = os.path.join(parent_dir,f'{studied_region}\\'.replace(" ","_"))
         new_path = dl_path + f'{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}\\'.replace(" ","_")
     else :
-        dl_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_")) 
+        dl_path = os.path.join(parent_dir,f'{studied_region}/'.replace(" ","_"))
         new_path = dl_path+ f'{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}/'.replace(" ","_")
     
     if os.path.isdir(new_path):
@@ -141,12 +142,11 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     return otec_plants, sites_df,capex_opex_comparison,cost_dict
 
 if __name__ == "__main__":
-    
-    Cdp.save_credentials()
+    # copernicusmarine.login()
+    # Cdp.save_credentials()
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
-    # studied_region = "Comores" #Comores"#"Aruba"# "Reunion"# input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     studied_region = input('++ Setting up seawater temperature data download ++\n\nEnter the region to be analysed.  ')
     
     # # OTEC's costs are still uncertain today and estimations in literature can vary significantly.
@@ -157,7 +157,6 @@ if __name__ == "__main__":
     ## off-design (operational) conditions. Make sure that you enter the power output in [kW] as a negative number. For example, if the user wants to size a
     ## 136 MW_gross system, the user needs to enter -136000
     
-    # p_gross = -3000 #int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
     p_gross = int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
 
     

@@ -12,6 +12,7 @@ Comparison/
 #Ignore cache folders
 .idea/
 .spyproject/
+.vscode/
 
 
 #Below is the basic .gitignore for Python
