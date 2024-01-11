@@ -9,14 +9,19 @@ pyOTEC designs ocean thermal energy conversion (OTEC) plants for best economic p
 ```
 conda install netCDF4
 ```
+
+Also install cartopy to plot the world map if needed :
+```
+pip install cartopy
+```
          
-3. Go to https://github.com/JKALanger/pyOTEC and download the repository to your computer
+3. Go to https://github.com/JKALanger/pyOTEC and download/clone the repository to your computer
 4. Go to Copernicus Marine (CMEMS) https://marine.copernicus.eu/ and create an account for free (you need the account to download the seawater temperature data)
 5. In Anaconda prompt, run the following command:
 ```
 python -m pip install copernicus-marine-client
 ```
-   This installs the copernicus-marine-client which is used to download the seawater temperature data required to size the OTEC plants.
+This installs the copernicus-marine-client which is used to download the seawater temperature data required to size the OTEC plants.
 
 6. Login to your CMEMS account by opening a python terminal (e.g. writting "python" or "python3" in the command line), then pasting the following lines :
 ```
