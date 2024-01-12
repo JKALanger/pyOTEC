@@ -17,7 +17,7 @@ from otec_operation import otec_operation
 def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
     
     # inputs = parameters_and_constants(cost_level)
-    
+   
     del_T_WW_min, \
     del_T_CW_min, \
     del_T_WW_max, \
@@ -44,10 +44,9 @@ def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
                                     inputs,
                                     cost_level)
             
-            CAPEX,OPEX,LCOE_nom = capex_opex_lcoe(otec_plant_nominal,                                              
-                                        inputs,
-                                        cost_level)
-            
+            _, CAPEX, OPEX, LCOE_nom = capex_opex_lcoe(
+                otec_plant_nominal, inputs, cost_level)
+
             otec_plant_nominal['CAPEX'] = CAPEX
             otec_plant_nominal['OPEX'] = OPEX
             otec_plant_nominal['LCOE_nom'] = LCOE_nom
@@ -74,15 +73,18 @@ def on_design_analysis(T_WW_in,T_CW_in,inputs,cost_level='low_cost'):
                                         inputs,
                                         cost_level)
     
-    CAPEX,OPEX,LCOE_nom = capex_opex_lcoe(otec_plant_nominal_lowest_lcoe,                                              
+    all_CAPEX_OPEX,CAPEX,OPEX,LCOE_nom = capex_opex_lcoe(otec_plant_nominal_lowest_lcoe,                                              
                                 inputs,
                                 cost_level)
+    
+    
     
     otec_plant_nominal_lowest_lcoe['CAPEX'] = CAPEX
     otec_plant_nominal_lowest_lcoe['OPEX'] = OPEX
     otec_plant_nominal_lowest_lcoe['LCOE_nom'] = LCOE_nom
-                 
-    return otec_plant_nominal_lowest_lcoe
+
+    
+    return otec_plant_nominal_lowest_lcoe,all_CAPEX_OPEX
 
 def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inputs,coordinates,timestamp,studied_region,new_path,cost_level='low_cost'):
        
@@ -95,12 +97,13 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
     else:    
         lcoe_matrix = np.empty((len(T_WW_design),len(T_CW_design),np.shape(T_WW_profiles)[1]),dtype=np.float64)
     
+    CAPEX_OPEX_for_comparison = []
     for index_cw,t_cw_design in enumerate(T_CW_design):
         for index_ww,t_ww_design in enumerate(T_WW_design):
             
-            print(f'Configuration {index_ww + index_cw*3 + 1}')
+            # print(f'Configuration {index_ww + index_cw*3 + 1}')
             
-            otec_plant_nominal_lowest_lcoe = on_design_analysis(t_ww_design,t_cw_design,inputs,cost_level)          
+            otec_plant_nominal_lowest_lcoe,all_CAPEX_OPEX = on_design_analysis(t_ww_design,t_cw_design,inputs,cost_level)          
             otec_plant_off_design = otec_operation(otec_plant_nominal_lowest_lcoe,T_WW_profiles,T_CW_profiles,inputs)
             
             otec_plant_off_design.update(otec_plant_nominal_lowest_lcoe)
@@ -114,6 +117,8 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
                 lcoe_matrix[index_cw][index_ww]  = otec_plant_off_design['LCOE']
             else:    
                 lcoe_matrix[index_cw][index_ww][:]  = otec_plant_off_design['LCOE']
+                
+            CAPEX_OPEX_for_comparison.append([all_CAPEX_OPEX])
     
     lcoe_matrix = np.nan_to_num(lcoe_matrix,nan=10000) # replace NaN with unreasonably high value
               
@@ -161,4 +166,4 @@ def off_design_analysis(T_WW_design,T_CW_design,T_WW_profiles,T_CW_profiles,inpu
     
     print('\nTime series data successfully exported as h5 file.\n\nEnd of script.')
     
-    return otec_plant_lowest_lcoe
+    return otec_plant_lowest_lcoe, CAPEX_OPEX_for_comparison

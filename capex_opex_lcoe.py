@@ -27,11 +27,11 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
         capex_turbine = 328*(136000/-p_gross)**0.16
         capex_HX = 226*(80000/-p_gross)**0.16
         capex_pump = 1674*(5600/p_pump_total)**0.38
-        capex_pipes = 9       
+        capex_pipes = 9  # to divide : material, fabrication, transport, installation cost
         capex_structure = 4465*(28100/-p_gross)**0.35
         capex_deploy = 650
-        capex_controls = 3113*(3960/-p_gross)**0.70  
-        capex_extra = 0.05    
+        capex_controls = 3113*(3960/-p_gross)**0.70
+        capex_extra = 0.05
         opex = 0.03          
     elif cost_level == 'high_cost':        
         capex_turbine = 512*(136000/-p_gross)**0.16
@@ -52,7 +52,7 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     # DC cables for distances beyond 50 km, source: Bosch et al. (2019), costs converted from US$(2016) to US$(2021) with conversion factor 1.10411)
     capex_cable[dist_shore > 50] = (2.2*dist_shore[dist_shore > 50]+387.8)*1.10411   
        
-    (0.0085*1.11*1.09*inputs['dist_shore']+0.0568*1.11*1.09)
+    # (0.0085*1.11*1.09*inputs['dist_shore']+0.0568*1.11*1.09)
     
     CAPEX_turbine = capex_turbine*-p_gross
     CAPEX_evap = capex_HX*A_evap
@@ -69,16 +69,35 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     
     CAPEX_total = CAPEX_wo_extra+CAPEX_extra
     
+    
     OPEX = CAPEX_total*opex       
         
     LCOE_nom = (CAPEX_total*inputs['crf']+OPEX)*100/(-p_net*inputs['availability_factor']*8760) # LCOE in ct/kWh
     
+    CAPEX_mooring = CAPEX_structure / 4 
+    CAPEX_platform = 3* CAPEX_structure / 4 
+    
+    CAPEX_OPEX_dict = {
+    'turbine_CAPEX': CAPEX_turbine[0],
+    'evap_CAPEX': CAPEX_evap[0],
+    'cond_CAPEX': CAPEX_cond[0],
+    'pump_CAPEX': CAPEX_pump,
+    'pipes_CAPEX': CAPEX_pipes,
+    # 'structure_CAPEX': CAPEX_structure[0],
+    'mooring_CAPEX': CAPEX_mooring[0],
+    'platform_CAPEX': CAPEX_platform[0],
+    'deploy_CAPEX': CAPEX_deploy[0],
+    'man_CAPEX': CAPEX_man[0],
+    'cable_CAPEX': CAPEX_cable[0],
+    'extra_CAPEX': CAPEX_extra[0],
+    'OPEX': OPEX[0],
+    'LCOE':LCOE_nom[0]
+}
     # np.where(LCOE_nom < 0)
     # CAPEX_total[0,1061]
     # OPEX[0,1061]
     # p_net[0,1061]
     # LCOE_nom[0,1061]
-    
     # a = T_WW_profiles[:,1061]
     
     if np.any(LCOE_nom <= 0):
@@ -86,7 +105,9 @@ def capex_opex_lcoe(otec_plant_nom,inputs,cost_level='low_cost'):
     else:
         pass
     
-    return CAPEX_total,OPEX,LCOE_nom
+    # print(LCOE_nom)
+    # print(len(LCOE_nom[0]))
+    return CAPEX_OPEX_dict,CAPEX_total,OPEX,LCOE_nom
 
 def lcoe_time_series(otec_plant_nom,inputs,p_net_ts):
     

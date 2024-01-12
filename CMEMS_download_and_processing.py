@@ -14,10 +14,29 @@ import numpy as np
 import datetime
 import os
 import time
+import copernicus_marine_client as copernicusmarine
 
 ## We use seawater temperature data from CMEMS for our OTEC analysis. If the data does not exist in the work folder yet, then it is downloaded with the function
 ## below. Essentially, we contact CMEMS's servers via an url created from input data like desired year, water depth, coordinates, etc, and download the data
 ## after the connection to the server has been established successfully.
+
+def save_credentials():
+    # Check if credentials.txt exists
+    if os.path.exists("credentials.txt"):
+        pass
+    else:
+        print("Please enter your CMEMS username and password to access the data")
+        # Ask the username its username and password
+        username = input("Username : ")
+        password = getpass.getpass()
+
+        # Create the file containing the informations
+        with open("credentials.txt", "w") as file:
+            file.write(f"{username},{password}\n")
+
+        print("Credentials saved in 'credentials.txt'. They can be changed directly from the file from now on.")
+
+
 
 def download_data(cost_level,inputs,studied_region,new_path):
     
@@ -27,7 +46,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
     user = credentials[0]
     password = credentials[1] #getpass.getpass("Enter your password: ")
     
-    regions = pd.read_csv('download_ranges_per_region.csv',delimiter=';',encoding='latin-1')  
+    regions = pd.read_csv('download_ranges_per_region.csv',delimiter=';')  
         
     if np.any(regions['region'] == studied_region):
         
@@ -47,7 +66,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
         ## We store the filenames and their paths, so that the seawater temperature data can be accessed by pyOTEC later.
         
         files = []
-        
+        # print(depth_WW,depth_CW)
         for depth in [depth_WW,depth_CW]:
             for part in range(0,parts):
                                 
@@ -62,19 +81,39 @@ def download_data(cost_level,inputs,studied_region,new_path):
                 filename = f'T_{round(depth,0)}m_{date_start[0:4]}_{studied_region}_{part+1}.nc'.replace(" ","_")
                 filepath = os.path.join(new_path, filename)
                 files.append(filepath)
-                
+                directory_data_results='Data_Results/'
+                print(filepath)
                 if os.path.isfile(filepath):           
                     print('File already exists. No download necessary.')
                     continue
                 else:  
+                    # Download the subset of data
+                    # print(directory_data_results+studied_region.replace(" ","_"))
+                    copernicusmarine.subset(
+                        dataset_id = "cmems_mod_glo_phy_my_0.083_P1D-m",
+                        variables = ['thetao'],
+                        minimum_longitude = west,
+                        maximum_longitude = east,
+                        minimum_latitude = south,
+                        maximum_latitude = north,
+                        minimum_depth = depth,
+                        maximum_depth = depth,
+                        start_datetime = date_start,
+                        end_datetime = date_end,
+                        force_download = True,
+                        output_directory = directory_data_results+studied_region.replace(" ","_"),
+                        output_filename = filename
+                    )
                     
                     ## here we construct the URL with which we request the data from CMEMS's servers.
+                    #change python in python3 if the following command isn't working
+                    # motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
+                    #                 f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
+                    #                 f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
                     
-                    motu_request = ('python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
-                                    f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
-                                    f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
-                    
-                    os.system(motu_request)
+                    # os.system(motu_request)
+
+                    # copernicusmarine.subset(motu_api_request = motu_request)
           
                     end_time = time.time()
                     print(f'{filename} saved. Time for download: ' + str(round((end_time-start_time)/60,2)) + ' minutes.')
@@ -86,11 +125,9 @@ def download_data(cost_level,inputs,studied_region,new_path):
 
 
 def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_columns = None):
-    
     ## Here we convert the pandas Dataframe storing site-specific data into a numpy array
     
     sites = np.vstack((sites_df['longitude'],sites_df['latitude'],sites_df['dist_shore'],sites_df['id'])).T
-    
     ## The "for file in files" was made for countries and territories that stretch across the East/West border, like Fiji and New Zealand.
     ## These regions are split into two parts that cover the regions' Eastern and Western side, respectively.
 
@@ -106,7 +143,11 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     
     time = T_water_nc.variables['time'][:]
     time_origin = datetime.datetime.strptime(inputs['time_origin'], '%Y-%m-%d %H:%M:%S') 
-    timestamp = [time_origin + datetime.timedelta(hours=step) for idx,step in enumerate(time)]  
+    # print(time)
+    # print(datetime.timedelta(hours=time[0]))
+    
+    
+    timestamp = [time_origin + datetime.timedelta(hours=int(step)) for idx,step in enumerate(time)]  
     
     ## Earlier, we downloaded the data across a rectangular field defined by the input coordinates. However, not every data point is suitable
     ## for OTEC (e.g. points on land, too shallow/ deep water, inside marine protection areas, etc). In this loop, we check which downloaded data points
@@ -222,7 +263,7 @@ def data_processing(files,sites_df,inputs,studied_region,new_path,water,nan_colu
     pd.DataFrame(coordinates).to_hdf(new_path + filename,key='coordinates')
     pd.DataFrame(nan_columns[1]).to_hdf(new_path + filename,key='nan_columns')
     pd.DataFrame(id_sites).to_hdf(new_path + filename,key='id_sites')
-               
+    
     print(f'Processing {filename} successful. h5 temperature profiles exported.\n')
             
     return T_water_profiles, T_water_design, coordinates, id_sites, T_water_profiles_df.index, inputs, nan_columns
