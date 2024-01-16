@@ -5,10 +5,7 @@ Created on Fri Mar  3 16:08:37 2023
 @author: jkalanger
 """
 
-import requests
-import getpass
 import netCDF4
-import xarray as xr
 import pandas as pd
 import numpy as np
 import datetime
@@ -20,32 +17,13 @@ import copernicus_marine_client as copernicusmarine
 ## below. Essentially, we contact CMEMS's servers via an url created from input data like desired year, water depth, coordinates, etc, and download the data
 ## after the connection to the server has been established successfully.
 
-def save_credentials():
-    # Check if credentials.txt exists
-    if os.path.exists("credentials.txt"):
-        pass
-    else:
-        print("Please enter your CMEMS username and password to access the data")
-        # Ask the username its username and password
-        username = input("Username : ")
-        password = getpass.getpass()
-
-        # Create the file containing the informations
-        with open("credentials.txt", "w") as file:
-            file.write(f"{username},{password}\n")
-
-        print("Credentials saved in 'credentials.txt'. They can be changed directly from the file from now on.")
 
 
 
 def download_data(cost_level,inputs,studied_region,new_path):
     
     ## The csv file below stores all countries and territories that have OTEC resources, their coordinates, and electricity demand in 2019.
-    
-    credentials = list(pd.read_csv('credentials.txt',delimiter=','))
-    user = credentials[0]
-    password = credentials[1] #getpass.getpass("Enter your password: ")
-    
+       
     regions = pd.read_csv('download_ranges_per_region.csv',delimiter=';')  
         
     if np.any(regions['region'] == studied_region):
@@ -88,7 +66,7 @@ def download_data(cost_level,inputs,studied_region,new_path):
                     continue
                 else:  
                     # Download the subset of data
-                    # print(directory_data_results+studied_region.replace(" ","_"))
+                    # try: 
                     copernicusmarine.subset(
                         dataset_id = "cmems_mod_glo_phy_my_0.083_P1D-m",
                         variables = ['thetao'],
@@ -104,19 +82,12 @@ def download_data(cost_level,inputs,studied_region,new_path):
                         output_directory = directory_data_results+studied_region.replace(" ","_"),
                         output_filename = filename
                     )
-                    
-                    ## here we construct the URL with which we request the data from CMEMS's servers.
-                    #change python in python3 if the following command isn't working
-                    # motu_request = ('python3 -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id GLOBAL_MULTIYEAR_PHY_001_030-TDS --product-id cmems_mod_glo_phy_my_0.083_P1D-m --' +
-                    #                 f'longitude-min {west} --longitude-max {east} --latitude-min {south} --latitude-max {north} --date-min {date_start} --date-max {date_end} ' +
-                    #                 f'--depth-min {depth} --depth-max {depth} --variable thetao --out-dir "{directory_data_results+studied_region.replace(" ","_")}" --out-name {filename} --user "{credentials[0]}" --pwd "{credentials[1]}"')
-                    
-                    # os.system(motu_request)
+                        
 
-                    # copernicusmarine.subset(motu_api_request = motu_request)
-          
                     end_time = time.time()
                     print(f'{filename} saved. Time for download: ' + str(round((end_time-start_time)/60,2)) + ' minutes.')
+                
+                
         
         return files    
         

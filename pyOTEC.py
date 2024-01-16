@@ -25,7 +25,7 @@ import parameters_and_constants as pc
 import off_design_analysis as oda
 import create_plots as cp
 import cost_analysis as co
-import copernicus_marine_client as copernicusmarine
+
 
 
 
@@ -142,8 +142,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     return otec_plants, sites_df,capex_opex_comparison,cost_dict
 
 if __name__ == "__main__":
-    # copernicusmarine.login()
-    # Cdp.save_credentials()
+    
     ## Please enter the region that you want to analyse. Please check the file "download_ranges_per_region.csv"
     ## for the regions that are covered by pyOTEC.
     
@@ -158,13 +157,10 @@ if __name__ == "__main__":
     ## 136 MW_gross system, the user needs to enter -136000
     
     p_gross = int(input('\nPlease enter the gross power output in [kW] as a negative number (default: -136000 kW).  '))
+    
+    print("If you are asked to enter your Copernicus username and password, you may prefer to avoid this by linking your PC with your account. For this, please follow the step 6 of the" , f'"README.md", line 26')
 
     
     otec_plants, sites,capex_opex_comparison,cost_dict = pyOTEC(studied_region,p_gross,cost_level)
-    
-    
-    # # list_p_gross=[-3000,-6500,-10000,-15000,-25000,-40000,-60000,-85000,-115000]
-    # list_p_gross=np.arange(-114000,0,3000)
-    # for p_gross in list_p_gross:
-    #     otec_plants, sites,capex_opex_comparison,cost_dict = pyOTEC(studied_region,p_gross,cost_level)
+
 
