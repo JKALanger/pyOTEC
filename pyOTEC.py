@@ -96,50 +96,48 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     sites['T_CW_med'] = T_CW_design[1,:]
     sites['T_CW_max'] = T_CW_design[0,:]
     
-    
-    pipe = pd.DataFrame()
-    pipe['d_pipes_CW']=otec_plants['d_pipes_CW']
-    pipe['num_pipes_CW']=otec_plants['num_pipes_CW']
-    pipe['m_pipes_CW']=otec_plants['m_pipes_CW']
-    pipe['A_pipes_CW']=otec_plants['A_pipes_CW']
-    
-    pipe.to_csv(new_path + f'CWP_details_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='id',float_format='%.3f',sep=';')
-    
-    
-    #take into account the location for the calculation of the transport of the pipe
-    
     sites = sites.dropna(axis='rows')
 
     p_net_profile = pd.DataFrame(np.mean(otec_plants['p_net'],axis=1),columns=['p_net'],index=timestamp)
     
     p_gross = inputs['p_gross']
-    
-    p_net_per_location=np.mean(otec_plants['p_net'],axis=0)
-    pnet_lon_lat = np.array([coordinates_CW[:,0],coordinates_CW[:,1],p_net_per_location])
-    column_names = ['longitude','latitude','p_net']
-    
-    
-    # saves all the pnet profiles at all the locations ? here only the mean per location
-    all_pnet_df=pd.DataFrame(np.transpose(pnet_lon_lat))
-    all_pnet_df.columns=column_names
-    
-    all_pnet_df.to_csv(new_path + f'net_power_profiles_per_location_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=False,sep=';')
-    
+   
     sites.to_csv(new_path + f'OTEC_sites_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='id',float_format='%.3f',sep=';')
     p_net_profile.to_csv(new_path + f'net_power_profiles_per_day_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True,sep=';')
     
-    cost_dict,best_LCOE_index = cp.plot_capex_opex(new_path,capex_opex_comparison,sites,p_gross,studied_region)
-    #enregistrer ce résultat afin qu'on puisse l'utiliser pour comparer les LCOE etc pour différentes puissances ou différentes hypothèses de calculs (ex: épaisseur de tuyau)
-    eco = pd.DataFrame.from_dict(cost_dict)
-    # print(eco)
-    eco.to_csv(new_path + f'eco_details_{studied_region}_{year}_pos_{best_LCOE_index}_index_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='Configuration',float_format='%.3f',sep=';')
+    ## Further analysis, credit: Lucas Vatinel
+    ## Economic analysis has not fully been tested and validated, use with caution
+    
+    # pipe = pd.DataFrame()
+    # pipe['d_pipes_CW']=otec_plants['d_pipes_CW']
+    # pipe['num_pipes_CW']=otec_plants['num_pipes_CW']
+    # pipe['m_pipes_CW']=otec_plants['m_pipes_CW']
+    # pipe['A_pipes_CW']=otec_plants['A_pipes_CW']
+    
+    # pipe.to_csv(new_path + f'CWP_details_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='id',float_format='%.3f',sep=';')   
+   
+    # p_net_per_location=np.mean(otec_plants['p_net'],axis=0)
+    # pnet_lon_lat = np.array([coordinates_CW[:,0],coordinates_CW[:,1],p_net_per_location])
+    # column_names = ['longitude','latitude','p_net']
+    
+    # # saves all the pnet profiles at all the locations ? here only the mean per location
+    # all_pnet_df=pd.DataFrame(np.transpose(pnet_lon_lat))
+    # all_pnet_df.columns=column_names
+    
+    # all_pnet_df.to_csv(new_path + f'net_power_profiles_per_location_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=False,sep=';') 
+    
+    # cost_dict,best_LCOE_index = cp.plot_capex_opex(new_path,capex_opex_comparison,sites,p_gross,studied_region)
+    # #enregistrer ce résultat afin qu'on puisse l'utiliser pour comparer les LCOE etc pour différentes puissances ou différentes hypothèses de calculs (ex: épaisseur de tuyau)
+    # eco = pd.DataFrame.from_dict(cost_dict)
+    # # print(eco)
+    # eco.to_csv(new_path + f'eco_details_{studied_region}_{year}_pos_{best_LCOE_index}_index_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True, index_label='Configuration',float_format='%.3f',sep=';')
+        
+    # co.extract_costs_at_study_location(sites,capex_opex_comparison,user_lon=55.25,user_lat=-20.833)s
     
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
     
-    # co.extract_costs_at_study_location(sites,capex_opex_comparison,user_lon=55.25,user_lat=-20.833)s
-    
-    return otec_plants, sites_df,capex_opex_comparison,cost_dict
+    return otec_plants,sites_df,capex_opex_comparison # add cost_dict here if further analysis above is conducted
 
 if __name__ == "__main__":
     
@@ -161,6 +159,6 @@ if __name__ == "__main__":
     print("If you are asked to enter your Copernicus username and password, you may prefer to avoid this by linking your PC with your account. For this, please follow the step 6 of the" , f'"README.md", line 26')
 
     
-    otec_plants, sites,capex_opex_comparison,cost_dict = pyOTEC(studied_region,p_gross,cost_level)
+    otec_plants, sites,capex_opex_comparison = pyOTEC(studied_region,p_gross,cost_level) # add cost_dict here if further analysis is conducted
 
 
