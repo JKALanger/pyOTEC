@@ -10,7 +10,7 @@ pyOTEC designs ocean thermal energy conversion (OTEC) plants for best economic p
 conda install netCDF4
 ```
 
-Also install cartopy to plot the world map if needed :
+If you want to use the geographic visualisation functions of pyOTEC (work-in-progress), install Cartopy using:
 ```
 pip install cartopy
 ```
@@ -19,13 +19,18 @@ pip install cartopy
 4. Go to Copernicus Marine (CMEMS) https://marine.copernicus.eu/ and create an account for free (you need the account to download the seawater temperature data)
 5. In Anaconda prompt, run the following command:
 ```
-python -m pip install copernicus-marine-client
+python -m pip install copernicusmarine
 ```
-This installs the copernicus-marine-client which is used to download the seawater temperature data required to size the OTEC plants.
+This installs the client used to download the seawater temperature data required to size the OTEC plants.
 
-6. Login to your CMEMS account by opening a python terminal (e.g. writting "python" or "python3" in the command line), then pasting the following lines :
+To update the client, run the following command in Anaconda prompt:
 ```
-import copernicus_marine_client as copernicusmarine
+python -m pip update copernicusmarine
+```
+
+6. Login to your CMEMS account by opening a python terminal (e.g. writting "python" or "python3" in the command line) or console of an IDE like Spyder, and then paste the following lines :
+```
+import copernicusmarine
 copernicusmarine.login() 
 ```
 This will create locally a file with your CMEMS username and password, and you will not have to worry about logging in in the future.
@@ -38,6 +43,6 @@ This will create locally a file with your CMEMS username and password, and you w
 ## Citation
 
 
-When using pyOTEC, e.g. in a scientific publication, please refer to the following paper:
+When using pyOTEC, e.g., in a scientific publication, please refer to the following paper:
 
 Langer, J., Blok, K. The global techno-economic potential of floating, closed-cycle ocean thermal energy conversion. J. Ocean Eng. Mar. Energy (2023). https://doi.org/10.1007/s40722-023-00301-1
