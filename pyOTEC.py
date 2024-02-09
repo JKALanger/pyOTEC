@@ -137,7 +137,7 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     end = time.time()
     print('Total runtime: ' + str(round((end-start)/60,2)) + ' minutes.')
     
-    return otec_plants,sites_df,capex_opex_comparison # add cost_dict here if further analysis above is conducted
+    return otec_plants,sites_df # add cost_dict and capex_opex_comparison here if further analysis above is conducted
 
 if __name__ == "__main__":
     
@@ -159,6 +159,6 @@ if __name__ == "__main__":
     print("If you are asked to enter your Copernicus username and password, you may prefer to avoid this by linking your PC with your account. For this, please follow the step 6 of the" , f'"README.md", line 26')
 
     
-    otec_plants, sites,capex_opex_comparison = pyOTEC(studied_region,p_gross,cost_level) # add cost_dict here if further analysis is conducted
+    otec_plants, sites = pyOTEC(studied_region,p_gross,cost_level) # add cost_dict and capex_opex_comparison here if further analysis is conducted
 
 

@@ -11,7 +11,7 @@ import numpy as np
 import datetime
 import os
 import time
-import copernicus_marine_client as copernicusmarine
+import copernicusmarine
 
 ## We use seawater temperature data from CMEMS for our OTEC analysis. If the data does not exist in the work folder yet, then it is downloaded with the function
 ## below. Essentially, we contact CMEMS's servers via an url created from input data like desired year, water depth, coordinates, etc, and download the data
@@ -68,7 +68,8 @@ def download_data(cost_level,inputs,studied_region,new_path):
                     # Download the subset of data
                     # try: 
                     copernicusmarine.subset(
-                        dataset_id = "cmems_mod_glo_phy_my_0.083_P1D-m",
+                        dataset_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m",
+                        dataset_version="202311",
                         variables = ['thetao'],
                         minimum_longitude = west,
                         maximum_longitude = east,
