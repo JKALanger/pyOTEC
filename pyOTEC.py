@@ -106,8 +106,8 @@ def pyOTEC(studied_region,p_gross=-136000,cost_level='low_cost'):
     p_net_profile.to_csv(new_path + f'net_power_profiles_per_day_{studied_region}_{year}_{-p_gross/1000}_MW_{cost_level}.csv'.replace(" ","_"),index=True,sep=';')
     
     ## Further analysis, credit: Lucas Vatinel
-    ## Economic analysis has not fully been tested and validated, use with caution
-    
+    ## functions CWP_details and eco_details have not been fully validated, use with caution!
+        
     # pipe = pd.DataFrame()
     # pipe['d_pipes_CW']=otec_plants['d_pipes_CW']
     # pipe['num_pipes_CW']=otec_plants['num_pipes_CW']
