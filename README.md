@@ -25,7 +25,7 @@ This installs the client used to download the seawater temperature data required
 
 To update the client, run the following command in Anaconda prompt:
 ```
-python -m pip update copernicusmarine
+python -m pip install copernicusmarine --upgrade
 ```
 
 6. Login to your CMEMS account by opening a python terminal (e.g. writting "python" or "python3" in the command line) or console of an IDE like Spyder, and then paste the following lines :
